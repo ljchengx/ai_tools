@@ -66,6 +66,12 @@
   --shadow-button: 0 5px 14px rgba(31, 41, 55, 0.07);
   --shadow-button-hover: 0 8px 20px rgba(31, 41, 55, 0.1);
   --shadow-focus: 0 14px 38px rgba(31, 41, 55, 0.09), 0 0 0 1px rgba(64, 90, 80, 0.3), 0 0 28px rgba(64, 90, 80, 0.1);
+  --surface-tool-input: rgba(244, 246, 247, 0.92);
+  --surface-tool-output: rgba(255, 255, 255, 0.96);
+  --surface-watermark-source: rgba(248, 249, 250, 0.86);
+  --surface-watermark-preview: rgba(241, 244, 244, 0.74);
+  --border-watermark-preview: rgba(64, 90, 80, 0.15);
+  --shadow-watermark-preview: 0 12px 34px rgba(31, 41, 55, 0.07), 0 2px 6px rgba(31, 41, 55, 0.035);
 
   /* Motion */
   --duration-fast: 160ms;
@@ -4278,5 +4284,344 @@ a {
 
   .zhiye-home-search > span {
     display: none;
+  }
+}
+
+/* Stage 2: tool-specific workspaces */
+.pulse-workspace--base64 {
+  gap: 12px;
+}
+
+.pulse-workspace--base64 .pulse-toolbar {
+  min-height: 58px;
+  padding-block: 8px;
+}
+
+.pulse-workspace--base64 .pulse-toolbar__configuration {
+  gap: 18px;
+}
+
+.pulse-workspace--base64 .pulse-segmented-control button {
+  min-height: 38px;
+  padding-inline: 13px;
+}
+
+.pulse-editor-grid--base64 {
+  min-height: 256px;
+  max-height: 300px;
+  flex: 0 0 clamp(256px, 34vh, 300px);
+  grid-template-columns: minmax(0, 0.98fr) 88px minmax(0, 1.02fr);
+  gap: 14px;
+}
+
+.pulse-workspace--base64 .pulse-editor-card__heading {
+  min-height: 42px;
+}
+
+.pulse-workspace--base64 .pulse-editor-card textarea {
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.pulse-workspace--base64 .pulse-transfer {
+  gap: 8px;
+}
+
+.pulse-workspace--json-formatter .pulse-toolbar {
+  min-height: 70px;
+}
+
+.pulse-editor-grid--json-formatter {
+  min-height: 520px;
+  max-height: 680px;
+  flex: 1 1 clamp(520px, calc(100dvh - 300px), 680px);
+  grid-template-columns: minmax(0, 1.06fr) 104px minmax(0, 0.94fr);
+  gap: 16px;
+}
+
+.pulse-workspace--json-formatter .pulse-editor-card--input {
+  background: var(--surface-tool-input);
+}
+
+.pulse-workspace--json-formatter .pulse-editor-card--output {
+  background: var(--surface-tool-output);
+}
+
+.pulse-workspace--json-formatter .pulse-editor-card textarea {
+  padding: 20px 21px;
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+
+.pulse-workspace--json-formatter .pulse-json-tree {
+  padding: 20px 21px;
+  font-size: 13px;
+}
+
+.pulse-workspace--json-formatter .pulse-json-stats {
+  border-color: rgba(64, 90, 80, 0.13);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.pulse-workspace--markdown-cleaner .pulse-toolbar {
+  min-height: 62px;
+}
+
+.pulse-editor-grid--markdown-cleaner {
+  min-height: 560px;
+  max-height: 720px;
+  flex: 1 1 clamp(560px, calc(100dvh - 270px), 720px);
+  grid-template-columns: minmax(0, 1.18fr) 88px minmax(0, 0.82fr);
+  gap: 14px;
+}
+
+.pulse-workspace--markdown-cleaner .pulse-editor-card--input {
+  background: color-mix(in srgb, var(--surface-tool-input) 96%, transparent);
+}
+
+.pulse-workspace--markdown-cleaner .pulse-editor-card--output {
+  background: var(--surface-tool-output);
+}
+
+.pulse-workspace--markdown-cleaner .pulse-editor-card textarea {
+  padding: 21px 22px;
+}
+
+.pulse-workspace--markdown-cleaner .pulse-editor-card--output textarea {
+  font-size: 14.5px;
+  line-height: 1.95;
+}
+
+.pulse-file-import--markdown {
+  width: auto;
+  flex-basis: auto;
+  gap: 6px;
+  padding: 0 8px;
+  border-color: var(--color-line);
+  background: rgba(255, 255, 255, 0.54);
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+
+.pulse-file-import--markdown:hover {
+  border-color: rgba(64, 90, 80, 0.24);
+  background: rgba(255, 255, 255, 0.84);
+}
+
+/* Image watermark: controls become a quiet left rail beside the live canvas pair. */
+.pulse-workbench--image-watermark .pulse-workbench__header {
+  min-height: 74px;
+}
+
+.pulse-watermark-workspace {
+  display: grid;
+  grid-template-columns: minmax(230px, 272px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.pulse-watermark-controls {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.pulse-watermark-controls__body {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+
+.pulse-watermark-field,
+.pulse-watermark-field:last-child {
+  border-right: 0;
+  border-left: 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.pulse-watermark-field:last-child {
+  border-bottom: 0;
+}
+
+.pulse-watermark-field--text {
+  padding-top: 17px;
+}
+
+.pulse-watermark-field > input[type="text"],
+.pulse-color-control {
+  background: color-mix(in srgb, var(--surface-tool-input) 85%, transparent);
+}
+
+.pulse-watermark-panels {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: clamp(470px, calc(100dvh - 232px), 700px);
+  flex: none;
+  grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.pulse-watermark-panel--source {
+  background: var(--surface-watermark-source);
+}
+
+.pulse-watermark-panel--output {
+  border-color: var(--border-watermark-preview);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-watermark-preview);
+}
+
+.pulse-watermark-panel--output .pulse-watermark-panel__header {
+  border-bottom-color: rgba(64, 90, 80, 0.14);
+}
+
+.pulse-watermark-panel--output .pulse-watermark-panel__body {
+  background: var(--surface-watermark-preview);
+}
+
+.pulse-watermark-panel__body canvas,
+.pulse-watermark-source-image {
+  box-shadow: 0 16px 36px rgba(31, 41, 55, 0.16), 0 2px 6px rgba(31, 41, 55, 0.07);
+}
+
+.pulse-watermark-live-flow {
+  align-self: center;
+}
+
+.pulse-watermark-live-flow > span:first-child {
+  width: 38px;
+  height: 38px;
+  border-color: rgba(64, 90, 80, 0.2);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--color-amber-deep);
+}
+
+.pulse-watermark-statusbar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-height: 34px;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .pulse-watermark-workspace {
+    grid-template-columns: minmax(208px, 230px) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .pulse-watermark-field,
+  .pulse-watermark-field--color,
+  .pulse-watermark-field:last-child {
+    border-top: 0;
+    border-left: 0;
+  }
+
+  .pulse-watermark-panels {
+    grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .pulse-workspace--json-formatter .pulse-editor-grid--json-formatter,
+  .pulse-workspace--markdown-cleaner .pulse-editor-grid--markdown-cleaner {
+    min-height: 500px;
+    max-height: none;
+    flex: 1 1 auto;
+    grid-template-columns: minmax(0, 1fr) 82px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .pulse-workspace--base64 .pulse-toolbar,
+  .pulse-workspace--json-formatter .pulse-toolbar,
+  .pulse-workspace--markdown-cleaner .pulse-toolbar {
+    min-height: 0;
+  }
+
+  .pulse-editor-grid--base64,
+  .pulse-editor-grid--json-formatter,
+  .pulse-editor-grid--markdown-cleaner {
+    max-height: none;
+    flex: none;
+  }
+
+  .pulse-workspace--base64 .pulse-editor-card {
+    min-height: 250px;
+  }
+
+  .pulse-workspace--json-formatter .pulse-editor-card {
+    min-height: 420px;
+  }
+
+  .pulse-workspace--markdown-cleaner .pulse-editor-card {
+    min-height: 460px;
+  }
+
+  .pulse-file-import--markdown {
+    min-width: 0;
+    width: 36px;
+    padding: 0;
+  }
+
+  .pulse-file-import--markdown span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .pulse-watermark-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pulse-watermark-controls {
+    min-height: auto;
+  }
+
+  .pulse-watermark-controls__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pulse-watermark-field,
+  .pulse-watermark-field:last-child {
+    border-top: 1px solid var(--color-line);
+    border-bottom: 0;
+  }
+
+  .pulse-watermark-field--text {
+    border-top: 0;
+  }
+
+  .pulse-watermark-panels {
+    display: flex;
+    min-height: 0;
+    flex: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pulse-watermark-live-flow {
+    min-height: 40px;
+  }
+
+  .pulse-watermark-live-flow > span:first-child {
+    transform: rotate(90deg);
+  }
+
+  .pulse-watermark-panel {
+    min-height: 430px;
+  }
+
+  .pulse-watermark-statusbar {
+    display: flex;
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 2px;
   }
 }

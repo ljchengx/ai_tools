@@ -748,9 +748,9 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
               <div>
                 <span>{inputCount} {copy.character}</span>
                 {definition.slug === "markdown-cleaner" ? (
-                  <label className="pulse-file-import" title={copy.import}>
+                  <label className="pulse-file-import pulse-file-import--markdown" title={copy.import}>
                     <FileUp aria-hidden="true" size={15} strokeWidth={1.75} />
-                    <span className="sr-only">{copy.import}</span>
+                    <span>{copy.import}</span>
                     <input type="file" accept=".md,.markdown,text/markdown" onChange={handleFileInput} />
                   </label>
                 ) : null}
