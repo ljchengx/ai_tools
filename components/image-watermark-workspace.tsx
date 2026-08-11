@@ -306,7 +306,7 @@ function ImageWatermarkContent({ definition }: { definition: ToolDefinition }) {
       <header className="pulse-workbench__header">
         <div>
           <div className="pulse-workbench__meta" aria-hidden="true">
-            <span>LOCAL WORKBENCH</span>
+            <span>知页 / 工具</span>
             <i />
             <span>{locale === "zh" ? definition.category : definition.categoryEn}</span>
           </div>

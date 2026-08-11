@@ -40,12 +40,12 @@ test("静谧工坊主题使用冷雾灰、磨砂与聚焦呼吸", async ({ page 
     };
   });
 
-  expect(theme.pageBackground).toBe("rgb(233, 240, 239)");
-  expect(theme.cardBackground).toBe("rgba(235, 242, 241, 0.9)");
+  expect(theme.pageBackground).toBe("rgb(230, 234, 232)");
+  expect(theme.cardBackground).toBe("rgba(239, 242, 239, 0.94)");
   expect(theme.cardBackdrop).toBe("blur(18px)");
   expect(theme.cardAnimation).toBe("pulse-card-breathe");
-  expect(theme.buttonBackground).toBe("color(srgb 0.907843 0.930196 0.944706)");
-  expect(theme.activeIndicator).toBe("rgb(47, 95, 150)");
+  expect(theme.buttonBackground).toBe("rgb(246, 232, 228)");
+  expect(theme.activeIndicator).toBe("rgb(179, 79, 67)");
 });
 
 test("专注模式收起桌面侧栏并保留工具入口", async ({ page }) => {
