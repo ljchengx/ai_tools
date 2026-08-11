@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
+import { Globe2, Home, Menu, Moon, Sparkles, Sun, X } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { toolDefinitions, type ToolSlug } from "@/lib/tools/registry";
 
-import { BrandMark } from "./brand-mark";
 import { ToolIcon } from "./tool-icon";
 
 export type PulseLocale = "zh" | "en";
@@ -44,6 +42,7 @@ const shellCopy = {
     noon: "正午",
     afternoon: "午后",
     night: "月光",
+    home: "首页",
   },
   en: {
     tools: "Tools",
@@ -57,6 +56,7 @@ const shellCopy = {
     noon: "Noon",
     afternoon: "Afternoon",
     night: "Moonlight",
+    home: "Home",
   },
 } as const;
 
@@ -158,89 +158,87 @@ export function PulseShell({ activeTool, children, surface = "workspace" }: Puls
 
   return (
     <PulseLocaleContext.Provider value={contextValue}>
-      <div className={`pulse-app pulse-surface--${surface} pulse-day--${dayPeriod} ${isWorkspace && navigationOpen ? "is-navigation-open" : ""} ${isWorkspace && focusMode ? "is-focus-mode" : ""}`}>
-        {isWorkspace ? (
-          <>
-            <button
-              className="pulse-mobile-menu"
-              type="button"
-              aria-label={navigationOpen ? copy.closeMenu : copy.menu}
-              aria-controls="pulse-navigation"
-              aria-expanded={navigationOpen}
-              onClick={() => setNavigationOpen((open) => !open)}
+      <div className={`pulse-app pulse-surface--${surface} pulse-day--${dayPeriod} ${navigationOpen ? "is-navigation-open" : ""} ${isWorkspace && focusMode ? "is-focus-mode" : ""}`}>
+        <button
+          className="pulse-mobile-menu"
+          type="button"
+          aria-label={navigationOpen ? copy.closeMenu : copy.menu}
+          aria-controls="pulse-navigation"
+          aria-expanded={navigationOpen}
+          onClick={() => setNavigationOpen((open) => !open)}
+        >
+          {navigationOpen ? <X aria-hidden="true" size={20} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={20} strokeWidth={1.7} />}
+        </button>
+
+        <a className="pulse-mobile-brand" href="/" aria-label="知页首页">
+          <span>知页</span>
+        </a>
+
+        <aside className="pulse-sidebar" id="pulse-navigation" aria-label={copy.tools}>
+          <a className="pulse-brand" href="/" onClick={() => setNavigationOpen(false)} aria-label="知页首页">
+            <span>知页</span>
+            <i aria-hidden="true" />
+          </a>
+
+          <nav className="pulse-navigation">
+            <a
+              className={`pulse-navigation__item ${surface === "home" ? "is-active" : ""}`}
+              href="/"
+              onClick={() => setNavigationOpen(false)}
+              aria-current={surface === "home" ? "page" : undefined}
             >
-              {navigationOpen ? <X aria-hidden="true" size={20} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={20} strokeWidth={1.7} />}
+              <Home aria-hidden="true" size={24} strokeWidth={1.55} />
+              <span>{copy.home}</span>
+            </a>
+            <div className="pulse-navigation__tools">
+              {toolDefinitions.map((tool) => {
+                const isActive = activeTool === tool.slug;
+                const title = locale === "zh" ? tool.shortTitle : tool.shortTitleEn;
+
+                return (
+                  <a
+                    key={tool.slug}
+                    className={`pulse-navigation__tool ${isActive ? "is-active" : ""}`}
+                    href={`/tools/${tool.slug}`}
+                    onClick={() => setNavigationOpen(false)}
+                    aria-current={isActive ? "page" : undefined}
+                    title={title}
+                  >
+                    <ToolIcon name={tool.icon} size={21} strokeWidth={1.45} />
+                    <span>{title}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </nav>
+
+          <footer className="pulse-sidebar__footer">
+            <button className="pulse-rail-button" type="button" onClick={toggleLight} aria-label={copy.lightToggle} title={copy.lightToggle}>
+              {dayPeriod === "night" ? <Moon aria-hidden="true" size={22} strokeWidth={1.45} /> : <Sun aria-hidden="true" size={22} strokeWidth={1.45} />}
             </button>
+            <button
+              className="pulse-rail-button"
+              type="button"
+              onClick={() => contextValue.setLocale(locale === "zh" ? "en" : "zh")}
+              aria-label={locale === "zh" ? "Switch to English" : "切换至中文"}
+              title={locale === "zh" ? "EN" : "中文"}
+            >
+              <Globe2 aria-hidden="true" size={22} strokeWidth={1.45} />
+            </button>
+            <button
+              className={`pulse-rail-orb ${focusMode ? "is-active" : ""}`}
+              type="button"
+              onClick={toggleFocusMode}
+              aria-label={focusMode ? copy.leaveFocus : copy.enterFocus}
+              aria-pressed={focusMode}
+              title={focusMode ? copy.leaveFocus : copy.enterFocus}
+            >
+              <Sparkles aria-hidden="true" size={18} strokeWidth={1.5} />
+            </button>
+          </footer>
+        </aside>
 
-            <Link className="pulse-mobile-brand" href="/" aria-label="知页首页">
-              <BrandMark size={26} />
-              <span>知页</span>
-            </Link>
-
-            <aside className="pulse-sidebar" id="pulse-navigation" aria-label={copy.tools}>
-              <Link className="pulse-brand" href="/" onClick={() => setNavigationOpen(false)} aria-label="知页首页">
-                <span className="pulse-brand__mark"><BrandMark /></span>
-                <span>
-                  <strong>知页 <em>ZHIYE</em></strong>
-                  <small>LOCAL INTELLIGENCE</small>
-                </span>
-              </Link>
-
-              <button
-                className="pulse-focus-toggle"
-                type="button"
-                onClick={toggleFocusMode}
-                aria-label={focusMode ? copy.leaveFocus : copy.enterFocus}
-                aria-pressed={focusMode}
-                title={focusMode ? copy.leaveFocus : copy.enterFocus}
-              >
-                {focusMode ? <PanelLeftOpen aria-hidden="true" size={17} strokeWidth={1.6} /> : <PanelLeftClose aria-hidden="true" size={17} strokeWidth={1.6} />}
-                <span>{focusMode ? copy.leaveFocus : copy.enterFocus}</span>
-              </button>
-
-              <nav className="pulse-navigation">
-                <div className="pulse-navigation__tools">
-                  {toolDefinitions.map((tool) => {
-                    const isActive = activeTool === tool.slug;
-                    const title = locale === "zh" ? tool.shortTitle : tool.shortTitleEn;
-
-                    return (
-                      <Link
-                        key={tool.slug}
-                        className={`pulse-navigation__tool ${isActive ? "is-active" : ""}`}
-                        href={`/tools/${tool.slug}`}
-                        onClick={() => setNavigationOpen(false)}
-                        aria-current={isActive ? "page" : undefined}
-                        title={title}
-                      >
-                        <ToolIcon name={tool.icon} size={17} strokeWidth={1.55} />
-                        <span>{title}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </nav>
-
-              <footer className="pulse-sidebar__footer">
-                <button
-                  className="pulse-language-toggle"
-                  type="button"
-                  onClick={() => contextValue.setLocale(locale === "zh" ? "en" : "zh")}
-                  aria-label={locale === "zh" ? "Switch to English" : "切换至中文"}
-                >
-                  <span className={locale === "zh" ? "is-active" : ""}>中</span>
-                  <span className={locale === "en" ? "is-active" : ""}>EN</span>
-                </button>
-                <button className="pulse-time-light" type="button" onClick={toggleLight} aria-label={copy.lightToggle} title={copy.lightToggle}>
-                  <i aria-hidden="true" />
-                  {copy[dayPeriod]}
-                </button>
-              </footer>
-            </aside>
-
-            <button className="pulse-nav-scrim" type="button" aria-label={copy.closeMenu} onClick={() => setNavigationOpen(false)} />
-          </>
-        ) : null}
+        <button className="pulse-nav-scrim" type="button" aria-label={copy.closeMenu} onClick={() => setNavigationOpen(false)} />
 
         <main className="pulse-content">{children}</main>
       </div>
