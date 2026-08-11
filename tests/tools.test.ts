@@ -1,0 +1,112 @@
+import { describe, expect, it } from "vitest";
+
+import { decodeBase64, encodeBase64, TextTransformError } from "../lib/tools/base64";
+import { formatJson, getJsonStructureStats, getJsonSummary, JsonTransformError, minifyJson } from "../lib/tools/json";
+import { stripMarkdown } from "../lib/tools/markdown";
+import { searchTools } from "../lib/tools/registry";
+
+describe("Base64 文本转换", () => {
+  it("使用 UTF-8 正确编码和解码中文与 Emoji", () => {
+    const source = "你好，MORPH 🙂";
+
+    expect(decodeBase64(encodeBase64(source))).toBe(source);
+  });
+
+  it("允许解码内容中常见的换行空白", () => {
+    expect(decodeBase64("SGVs\nbG8gV29ybGQ=")).toBe("Hello World");
+  });
+
+  it("拒绝非法 Base64", () => {
+    expect(() => decodeBase64("%%%")) .toThrow(TextTransformError);
+    expect(() => decodeBase64("a")) .toThrow("Base64 长度无效");
+  });
+
+  it("支持无填充的 URL-safe Base64，并自动识别解码", () => {
+    const source = "你好🙂";
+    const urlSafe = encodeBase64(source, { variant: "url" });
+
+    expect(urlSafe).not.toMatch(/[+/=]/);
+    expect(decodeBase64(urlSafe)).toBe(source);
+    expect(encodeBase64(source, { variant: "url", padding: true }).endsWith("==")).toBe(true);
+  });
+});
+
+describe("JSON 处理", () => {
+  it("格式化并压缩严格 JSON", () => {
+    const source = '{"name":"MORPH","items":[1,true]}';
+
+    expect(formatJson(source)).toBe('{\n  "name": "MORPH",\n  "items": [\n    1,\n    true\n  ]\n}');
+    expect(minifyJson(formatJson(source))).toBe(source);
+  });
+
+  it("为无效 JSON 提供位置", () => {
+    const source = '{\n  "name": "MORPH",\n  "enabled": true,\n}';
+
+    try {
+      formatJson(source);
+      throw new Error("Expected JSON formatting to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(JsonTransformError);
+      const transformError = error as JsonTransformError;
+      expect(transformError.location.line).toBeGreaterThanOrEqual(3);
+      expect(transformError.location.column).toBeGreaterThan(0);
+    }
+  });
+
+  it("支持可选缩进、递归键排序和结构摘要", () => {
+    const source = '{"z":1,"a":{"d":2,"b":3}}';
+
+    expect(formatJson(source, { indentation: 4, sortKeys: true })).toBe(
+      '{\n    "a": {\n        "b": 3,\n        "d": 2\n    },\n    "z": 1\n}',
+    );
+    expect(getJsonSummary(JSON.parse(source))).toEqual({ kind: "object", entries: 2, nodes: 5, depth: 3 });
+    expect(getJsonStructureStats(JSON.parse(source))).toEqual({ objects: 2, arrays: 0, keyValuePairs: 4 });
+  });
+});
+
+describe("Markdown 清理", () => {
+  it("保留阅读结构并移除常见 Markdown 语法", () => {
+    const source = [
+      "# 标题",
+      "",
+      "这是 **加粗** 与 [链接](https://example.com)。",
+      "",
+      "![替代文字](image.png)",
+      "",
+      "> 引用内容",
+      "",
+      "```ts",
+      "const value = 1;",
+      "```",
+      "",
+      "| 名称 | 值 |",
+      "| --- | --- |",
+      "| A | B |",
+    ].join("\n");
+
+    expect(stripMarkdown(source)).toBe(
+      ["标题", "", "这是 加粗 与 链接。", "", "替代文字", "", "引用内容", "", "const value = 1;", "", "名称\t值\nA\tB"].join("\n"),
+    );
+  });
+
+  it("保留有序、嵌套和任务列表的阅读顺序", () => {
+    const source = [
+      "1. 第一项",
+      "   - 子项",
+      "   - [x] 已完成",
+      "2. 第二项",
+    ].join("\n");
+
+    expect(stripMarkdown(source)).toBe("1. 第一项\n  - 子项\n  - [x] 已完成\n2. 第二项");
+    expect(stripMarkdown("# 标题\n\n第一段\n\n第二段", { compact: true })).toBe("标题\n第一段\n第二段");
+  });
+});
+
+describe("工具注册表", () => {
+  it("支持中文和英文关键词搜索", () => {
+    expect(searchTools("编码").map((tool) => tool.slug)).toEqual(["base64"]);
+    expect(searchTools("JSON").map((tool) => tool.slug)).toEqual(["json-formatter"]);
+    expect(searchTools("markdown").map((tool) => tool.slug)).toEqual(["markdown-cleaner"]);
+    expect(searchTools("身份证").map((tool) => tool.slug)).toEqual(["image-watermark"]);
+  });
+});
