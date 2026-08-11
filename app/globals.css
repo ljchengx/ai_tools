@@ -4630,3 +4630,151 @@ a {
     padding: 4px 2px;
   }
 }
+
+/* Stage 3: editorial workbench language */
+.pulse-workbench {
+  --tool-accent: var(--brand-cobalt);
+  --tool-accent-wash: var(--brand-cobalt-wash);
+  --tool-accent-ink: var(--brand-cobalt-deep);
+}
+
+.pulse-workbench--json-formatter {
+  --tool-accent: var(--color-sage);
+  --tool-accent-wash: var(--color-sage-wash);
+  --tool-accent-ink: var(--color-sage);
+}
+
+.pulse-workbench--markdown-cleaner {
+  --tool-accent: var(--color-clay);
+  --tool-accent-wash: var(--color-clay-wash);
+  --tool-accent-ink: var(--color-clay);
+}
+
+.pulse-workbench__header > div:first-child {
+  min-width: 0;
+}
+
+.pulse-workbench__meta {
+  display: flex;
+  min-height: 16px;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+  color: var(--tool-accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.pulse-workbench__meta i {
+  width: 24px;
+  height: 1px;
+  flex: 0 0 24px;
+  background: var(--tool-accent);
+  opacity: 0.7;
+}
+
+.pulse-workbench__header h1 {
+  color: var(--tool-accent-ink);
+}
+
+.pulse-workspace .pulse-toolbar {
+  border-top: 2px solid color-mix(in srgb, var(--tool-accent) 42%, transparent);
+  border-right-color: color-mix(in srgb, var(--tool-accent) 14%, var(--color-line-light));
+  border-bottom-color: color-mix(in srgb, var(--tool-accent) 14%, var(--color-line-light));
+  border-left-color: color-mix(in srgb, var(--tool-accent) 14%, var(--color-line-light));
+  background: color-mix(in srgb, var(--color-paper) 80%, transparent);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--tool-accent) 7%, transparent);
+}
+
+.pulse-workspace .pulse-toolbar::before {
+  border-color: color-mix(in srgb, var(--tool-accent) 10%, transparent);
+}
+
+.pulse-workspace .pulse-segmented-control button.is-selected,
+.pulse-workspace .pulse-quiet-segments button.is-selected,
+.pulse-workspace .pulse-result-view button.is-selected,
+.pulse-workspace .pulse-segmented-control__static {
+  color: var(--tool-accent-ink);
+}
+
+.pulse-workspace .pulse-segmented-control button small {
+  color: var(--tool-accent);
+}
+
+.pulse-workspace .pulse-editor-card {
+  border-right-color: color-mix(in srgb, var(--tool-accent) 12%, var(--color-line-light));
+  border-bottom-color: color-mix(in srgb, var(--tool-accent) 12%, var(--color-line-light));
+  border-left-color: color-mix(in srgb, var(--tool-accent) 12%, var(--color-line-light));
+}
+
+.pulse-workspace .pulse-editor-card--input {
+  border-top: 2px solid color-mix(in srgb, var(--tool-accent) 48%, transparent);
+}
+
+.pulse-workspace .pulse-editor-card--output {
+  border-top: 2px solid color-mix(in srgb, var(--tool-accent) 22%, transparent);
+}
+
+.pulse-workspace .pulse-editor-card--input:focus-within {
+  box-shadow: 0 14px 38px color-mix(in srgb, var(--tool-accent) 14%, transparent), 0 0 0 1px color-mix(in srgb, var(--tool-accent) 32%, transparent), 0 0 28px color-mix(in srgb, var(--tool-accent) 12%, transparent);
+}
+
+.pulse-workspace .pulse-run-button {
+  border-color: color-mix(in srgb, var(--tool-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--tool-accent) 10%, var(--color-paper));
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--tool-accent) 11%, transparent);
+  color: var(--tool-accent-ink);
+}
+
+.pulse-workspace .pulse-run-button:hover {
+  border-color: color-mix(in srgb, var(--tool-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--tool-accent) 16%, var(--color-paper));
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--tool-accent) 16%, transparent);
+}
+
+.pulse-workspace .pulse-run-button.has-ripple::after {
+  background: color-mix(in srgb, var(--tool-accent) 22%, transparent);
+}
+
+.pulse-workspace .pulse-swap-button:hover,
+.pulse-workspace .pulse-icon-button:hover,
+.pulse-workspace .pulse-file-import:hover {
+  border-color: color-mix(in srgb, var(--tool-accent) 28%, transparent);
+  color: var(--tool-accent-ink);
+}
+
+.pulse-workbench--image-watermark {
+  --tool-accent: var(--brand-cobalt);
+  --tool-accent-wash: var(--brand-cobalt-wash);
+  --tool-accent-ink: var(--brand-cobalt-deep);
+}
+
+.pulse-workbench--image-watermark .pulse-watermark-controls,
+.pulse-workbench--image-watermark .pulse-watermark-panel {
+  border-top: 2px solid color-mix(in srgb, var(--tool-accent) 38%, transparent);
+}
+
+.pulse-workbench--image-watermark .pulse-watermark-panel--output {
+  border-top-color: color-mix(in srgb, var(--tool-accent) 22%, transparent);
+}
+
+.pulse-workbench--image-watermark .pulse-watermark-download,
+.pulse-workbench--image-watermark .pulse-watermark-empty .pulse-watermark-upload {
+  border-color: color-mix(in srgb, var(--tool-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--tool-accent) 10%, var(--color-paper));
+  color: var(--tool-accent-ink);
+}
+
+.pulse-workbench--image-watermark .pulse-watermark-download:hover:not(:disabled),
+.pulse-workbench--image-watermark .pulse-watermark-empty .pulse-watermark-upload:hover {
+  border-color: color-mix(in srgb, var(--tool-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--tool-accent) 16%, var(--color-paper));
+}
+
+@media (max-width: 767px) {
+  .pulse-workbench__meta {
+    margin-bottom: 9px;
+  }
+}

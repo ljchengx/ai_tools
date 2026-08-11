@@ -647,6 +647,11 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
     >
       <header className="pulse-workbench__header">
         <div>
+          <div className="pulse-workbench__meta" aria-hidden="true">
+            <span>LOCAL WORKBENCH</span>
+            <i />
+            <span>{locale === "zh" ? definition.category : definition.categoryEn}</span>
+          </div>
           <h1 id="tool-title">{title}</h1>
           <p>{description}</p>
         </div>
