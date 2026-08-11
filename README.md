@@ -78,11 +78,11 @@ npm run build
 npx vercel
 ```
 
-## 开源协议与商业授权
+## 许可与商业授权
 
-本项目采用 [MIT License](./LICENSE)。代码允许个人和商业项目免费使用、复制、修改、合并、发布、再授权和销售软件副本，无需另行申请商业授权；分发时请保留版权声明和许可证文本。
+本项目采用 [PolyForm Noncommercial License 1.0.0](./LICENSE)。源码可以查看，个人学习、研究、实验、教育和其他非商业用途可以免费使用；商业产品、公司内部业务、SaaS、客户交付、再分发和销售等用途需要先购买书面商业授权。
 
-MIT License 适用于项目代码与文档。`知页`、`ZHIYE` 名称、Logo 和相关品牌标识不构成商标授权。
+因此，本项目属于“源码可见许可”，不是允许商业使用的 OSI 认证开源协议。商业授权范围与费用请查看 [COMMERCIAL-LICENSE.md](./COMMERCIAL-LICENSE.md)，或联系 EverettStone1990@gmail.com。
 
 ## 项目结构
 
