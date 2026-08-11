@@ -12,12 +12,12 @@ test("首页展示知页品牌、免费承诺与四个工具入口", async ({ pa
   await expect(page.getByRole("link", { name: "EverettStone1990@gmail.com" })).toHaveAttribute("href", "mailto:EverettStone1990@gmail.com");
   await expect(page.getByRole("link", { name: "github.com/ljchengx" })).toHaveAttribute("href", "https://github.com/ljchengx");
 
-  const toolGrid = page.locator(".zhiye-tool-grid");
-  await expect(toolGrid.getByRole("link")).toHaveCount(4);
-  const search = page.getByPlaceholder("搜索工具，或输入“格式化 JSON”");
+  const toolIndex = page.locator(".zhiye-index-list");
+  await expect(toolIndex.getByRole("link")).toHaveCount(4);
+  const search = page.getByPlaceholder("搜索工具或使用场景");
   await search.fill("水印");
-  await expect(toolGrid.getByRole("link")).toHaveCount(1);
-  await expect(toolGrid.getByRole("link", { name: /图片水印/ })).toBeVisible();
+  await expect(toolIndex.getByRole("link")).toHaveCount(1);
+  await expect(toolIndex.getByRole("link", { name: /图片水印/ })).toBeVisible();
 });
 
 test("静谧工坊主题使用冷雾灰、磨砂与聚焦呼吸", async ({ page }) => {
@@ -116,8 +116,10 @@ test("减少动态效果时保留可访问的工具入口", async ({ browser }) 
   await page.goto("/");
 
   await expect(page.locator("canvas")).toHaveCount(0);
-  await page.getByRole("button", { name: "打开导航" }).click();
-  await expect(page.getByRole("navigation").getByRole("link", { name: "Markdown" })).toBeVisible();
+  const markdownLink = page.getByRole("link", { name: /打开工具：Markdown 清理/ });
+  await expect(markdownLink).toBeVisible();
+  await markdownLink.click();
+  await expect(page).toHaveURL(/\/tools\/markdown-cleaner/);
   await context.close();
 });
 
