@@ -3179,18 +3179,18 @@ a {
 
 /* Homepage: editorial local desk */
 .pulse-surface--home {
-  --home-canvas: #f2f5f4;
-  --home-paper: #fbfcfa;
-  --home-ink: #172022;
-  --home-ink-soft: #46565a;
-  --home-muted: #728184;
-  --home-quiet: #9ca9a9;
-  --home-line: rgba(52, 74, 76, 0.16);
-  --home-line-soft: rgba(52, 74, 76, 0.1);
-  --home-mineral: #35676a;
-  --home-mineral-wash: rgba(53, 103, 106, 0.08);
-  --home-cobalt: #3561a4;
-  --home-oxide: #b85a4a;
+  --home-canvas: var(--color-canvas);
+  --home-paper: var(--color-paper);
+  --home-ink: var(--color-ink);
+  --home-ink-soft: var(--color-ink-soft);
+  --home-muted: var(--color-muted);
+  --home-quiet: var(--color-quiet);
+  --home-line: var(--color-line);
+  --home-line-soft: color-mix(in srgb, var(--color-line) 72%, transparent);
+  --home-mineral: var(--brand-cobalt);
+  --home-mineral-wash: var(--brand-cobalt-wash);
+  --home-cobalt: var(--brand-cobalt);
+  --home-oxide: var(--color-clay);
   min-height: 100dvh;
   background: var(--home-canvas);
   color: var(--home-ink);
@@ -3371,10 +3371,10 @@ a {
   gap: 13px;
   margin-top: 36px;
   padding: 0 14px 0 18px;
-  border: 1px solid rgba(53, 103, 106, 0.35);
+  border: 1px solid color-mix(in srgb, var(--home-mineral) 35%, transparent);
   border-radius: 7px;
-  background: rgba(251, 252, 250, 0.88);
-  box-shadow: 0 10px 28px rgba(30, 48, 49, 0.055);
+  background: color-mix(in srgb, var(--home-paper) 88%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--home-ink) 7%, transparent);
   color: var(--home-muted);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -3383,7 +3383,7 @@ a {
 
 .zhiye-home-search:focus-within {
   border-color: var(--home-mineral);
-  box-shadow: 0 12px 30px rgba(30, 48, 49, 0.08), 0 0 0 3px rgba(53, 103, 106, 0.09);
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--home-ink) 10%, transparent), 0 0 0 3px color-mix(in srgb, var(--home-mineral) 12%, transparent);
   transform: translateY(-1px);
 }
 
@@ -3524,7 +3524,7 @@ a {
   padding: 22px 24px 24px;
   border: 1px solid var(--home-line);
   background: var(--home-paper);
-  box-shadow: 10px 12px 0 rgba(53, 103, 106, 0.045);
+  box-shadow: 10px 12px 0 color-mix(in srgb, var(--home-mineral) 6%, transparent);
 }
 
 .zhiye-specimen__tool {
@@ -3714,7 +3714,7 @@ a {
 .zhiye-index-row > a:focus-visible,
 .zhiye-index-row.is-active > a {
   padding-left: 14px;
-  background: rgba(251, 252, 250, 0.7);
+  background: color-mix(in srgb, var(--home-paper) 70%, transparent);
 }
 
 .zhiye-index-row:hover::before,
