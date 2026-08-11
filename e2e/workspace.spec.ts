@@ -1,19 +1,27 @@
 import { expect, test } from "@playwright/test";
 
-test("首页直接进入 Base64 工作台并保留四个工具入口", async ({ page }) => {
+test("首页展示知页品牌、免费承诺与四个工具入口", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Base64 编解码" })).toBeVisible();
-  const navigation = page.getByRole("navigation");
-  await expect(navigation.getByRole("link", { name: "Base64" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "JSON" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "Markdown" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "水印" })).toBeVisible();
-  await expect(page.getByPlaceholder("搜索工具或输入关键词")).toHaveCount(0);
+  await expect(page).toHaveTitle("知页 - AI 时代的浏览器本地工具箱");
+  await expect(page.getByRole("link", { name: "知页首页" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "知页", exact: true })).toBeVisible();
+  await expect(page.getByText("免费使用", { exact: true })).toBeVisible();
+  await expect(page.getByText("无需登录", { exact: true })).toBeVisible();
+  await expect(page.getByText("本地处理", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "EverettStone1990@gmail.com" })).toHaveAttribute("href", "mailto:EverettStone1990@gmail.com");
+  await expect(page.getByRole("link", { name: "github.com/ljchengx" })).toHaveAttribute("href", "https://github.com/ljchengx");
+
+  const toolGrid = page.locator(".zhiye-tool-grid");
+  await expect(toolGrid.getByRole("link")).toHaveCount(4);
+  const search = page.getByPlaceholder("搜索工具，或输入“格式化 JSON”");
+  await search.fill("水印");
+  await expect(toolGrid.getByRole("link")).toHaveCount(1);
+  await expect(toolGrid.getByRole("link", { name: /图片水印/ })).toBeVisible();
 });
 
 test("静谧工坊主题使用冷雾灰、磨砂与聚焦呼吸", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/tools/base64");
   await page.getByLabel("输入文本").focus();
 
   const theme = await page.evaluate(() => {
@@ -41,7 +49,7 @@ test("静谧工坊主题使用冷雾灰、磨砂与聚焦呼吸", async ({ page 
 });
 
 test("专注模式收起桌面侧栏并保留工具入口", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/tools/base64");
   await page.getByRole("button", { name: "进入专注模式" }).click();
 
   await expect(page.locator(".pulse-app")).toHaveClass(/is-focus-mode/);
@@ -72,6 +80,7 @@ test("专注模式收起桌面侧栏并保留工具入口", async ({ page }) => 
 test("Base64 可处理 UTF-8 文本", async ({ page }) => {
   await page.goto("/tools/base64");
 
+  await expect(page).toHaveTitle("Base64 编码解码 - UTF-8 与 URL Safe 在线工具 | 知页");
   await page.getByLabel("输入文本").fill("你好🙂");
   await page.getByRole("button", { name: "执行编码文本" }).click();
 

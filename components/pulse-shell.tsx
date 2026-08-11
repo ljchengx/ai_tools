@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 import { toolDefinitions, type ToolSlug } from "@/lib/tools/registry";
 
+import { BrandMark } from "./brand-mark";
 import { ToolIcon } from "./tool-icon";
 
 export type PulseLocale = "zh" | "en";
@@ -31,7 +32,7 @@ const PulseLocaleContext = createContext<PulseLocaleValue>({
 
 const shellCopy = {
   zh: {
-    tools: "文本工具",
+    tools: "本地工具",
     local: "仅在本地处理",
     menu: "打开导航",
     closeMenu: "关闭导航",
@@ -167,12 +168,17 @@ export function PulseShell({ activeTool, children }: PulseShellProps) {
           {navigationOpen ? <X aria-hidden="true" size={20} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={20} strokeWidth={1.7} />}
         </button>
 
+        <Link className="pulse-mobile-brand" href="/" aria-label="知页首页">
+          <BrandMark size={26} />
+          <span>知页</span>
+        </Link>
+
         <aside className="pulse-sidebar" id="pulse-navigation" aria-label={copy.tools}>
-          <Link className="pulse-brand" href="/" onClick={() => setNavigationOpen(false)} aria-label="Pulse 首页">
-            <span className="pulse-brand__mark" aria-hidden="true"><i /></span>
+          <Link className="pulse-brand" href="/" onClick={() => setNavigationOpen(false)} aria-label="知页首页">
+            <span className="pulse-brand__mark"><BrandMark /></span>
             <span>
-              <strong>PULSE</strong>
-              <small>TEXT UTILITY</small>
+              <strong>知页 <em>ZHIYE</em></strong>
+              <small>LOCAL INTELLIGENCE</small>
             </span>
           </Link>
 

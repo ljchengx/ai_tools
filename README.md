@@ -1,0 +1,101 @@
+# 知页 ZHIYE
+
+知页是面向 AI 时代的浏览器本地工具箱，注重视觉品质、使用效率与内容隐私。目前提供 Base64 编解码、JSON 格式化、Markdown 清理和图片水印四项工具。
+
+> 聪明处理，止于本页。
+
+所有文本与图片处理均在浏览器本地完成，不需要账号、数据库或服务端 API，也不会上传用户输入内容。
+
+## 功能
+
+| 工具 | 路由 | 能力 |
+| --- | --- | --- |
+| Base64 编解码 | `/tools/base64` | UTF-8 编解码、URL-safe、结果交换与下载 |
+| JSON 格式化 | `/tools/json-formatter` | 格式化、压缩、校验、键排序、错误定位与结构视图 |
+| Markdown 清理 | `/tools/markdown-cleaner` | 基于 AST 移除 Markdown 标记，保留列表、代码、链接文字与表格结构 |
+| 图片水印 | `/tools/image-watermark` | 本地上传图片，实时调整文本、颜色、透明度与角度，并按原尺寸导出 |
+
+首页 `/` 直接进入 Base64 工作台。侧边导航可访问全部工具，并支持中英文界面和专注模式。
+
+## 设计特点
+
+- 冷雾灰画布与低饱和矿物绿强调色
+- 使用 CSS Variables 统一管理颜色、字号、间距、圆角、阴影与动效
+- 桌面端保持高效分栏，移动端自动切换为纵向工作流
+- 支持 `prefers-reduced-motion`，减少动态效果时仍可完整使用
+- 图片和文本结果均作为本地数据处理，不进行 HTML 注入
+
+## 技术栈
+
+- Next.js 16 App Router
+- React 19 + TypeScript
+- Motion
+- unified、remark-parse、remark-gfm
+- Vitest + Playwright
+
+## 本地开发
+
+环境要求：Node.js 20.9 或更高版本。
+
+```bash
+npm install
+npm run dev
+```
+
+打开 [http://localhost:3000](http://localhost:3000)。如需允许局域网设备访问，可以运行：
+
+```bash
+npm run dev -- --hostname 0.0.0.0
+```
+
+## 验证
+
+```bash
+# TypeScript 类型检查
+npm run typecheck
+
+# 单元测试
+npm test
+
+# 端到端测试
+npm run test:e2e
+
+# 生产构建与静态导出
+npm run build
+```
+
+项目使用 `output: "export"`，生产构建生成的静态文件位于 `out/`。
+
+## 部署到 Vercel
+
+1. 在 Vercel 中导入本仓库。
+2. Framework Preset 选择 Next.js，其他构建配置保持默认。
+3. 部署即可，无需配置环境变量、数据库或外部服务。
+
+也可以通过 Vercel CLI 部署：
+
+```bash
+npx vercel
+```
+
+## 项目结构
+
+```text
+app/                         页面、静态路由与全局设计令牌
+components/                  工作台、导航和工具交互组件
+lib/tools/                   Base64、JSON、Markdown 纯处理逻辑
+lib/tools/registry.ts        工具注册表与搜索信息
+e2e/                         Playwright 端到端测试
+tests/                       Vitest 单元测试
+```
+
+## 扩展工具
+
+新增工具时，需要：
+
+1. 在 `lib/tools/registry.ts` 注册工具定义、关键词和页面元数据。
+2. 在 `lib/tools/` 中实现可独立测试的处理逻辑。
+3. 在 `components/` 中实现工作台界面，并在动态工具路由中关联组件。
+4. 为核心逻辑和主要用户流程补充单元测试与端到端测试。
+
+工具注册表同时驱动静态路由和侧边导航，新增能力不需要复制页面外壳。

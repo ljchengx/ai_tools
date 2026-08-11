@@ -6,3 +6,4 @@ test-results/
 *.tsbuildinfo
 *.log
 .codex-*
+.ace-tool/

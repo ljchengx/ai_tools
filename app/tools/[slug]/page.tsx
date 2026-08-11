@@ -19,9 +19,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {};
   }
 
+  const path = `/tools/${tool.slug}`;
+
   return {
     title: tool.metadata.title,
     description: tool.metadata.description,
+    alternates: {
+      canonical: path,
+    },
+    openGraph: {
+      type: "website",
+      locale: "zh_CN",
+      url: path,
+      siteName: "知页 ZHIYE",
+      title: `${tool.metadata.title} | 知页`,
+      description: tool.metadata.description,
+    },
+    twitter: {
+      card: "summary",
+      title: `${tool.metadata.title} | 知页`,
+      description: tool.metadata.description,
+    },
   };
 }
 

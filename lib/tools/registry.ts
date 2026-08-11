@@ -40,8 +40,8 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     icon: "binary",
     accent: "amber",
     metadata: {
-      title: "Base64 编解码",
-      description: "本地运行的 UTF-8 Base64 文本编解码工具。",
+      title: "Base64 编码解码 - UTF-8 与 URL Safe 在线工具",
+      description: "在浏览器本地进行 UTF-8 Base64 编码解码，支持标准与 URL Safe 格式，输入内容不会上传。",
     },
   },
   {
@@ -59,8 +59,8 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     icon: "braces",
     accent: "sage",
     metadata: {
-      title: "JSON 格式化",
-      description: "校验、格式化与压缩标准 JSON，并定位输入错误。",
+      title: "JSON 格式化校验 - 压缩、排序与错误定位",
+      description: "在浏览器本地格式化、压缩和校验 JSON，支持键排序、结构视图与精确错误定位。",
     },
   },
   {
@@ -78,8 +78,8 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     icon: "eraser",
     accent: "clay",
     metadata: {
-      title: "Markdown 清理",
-      description: "移除 Markdown 语法标记并保留阅读结构。",
+      title: "Markdown 转纯文本 - 在线去除 Markdown 格式",
+      description: "在浏览器本地去除 Markdown 语法标记，保留段落、列表、代码、链接文字与表格结构。",
     },
   },
   {
@@ -97,8 +97,8 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     icon: "stamp",
     accent: "clay",
     metadata: {
-      title: "图片水印",
-      description: "在浏览器本地为身份证等证件图片添加自定义文本水印。",
+      title: "图片加文字水印 - 身份证水印本地处理",
+      description: "在浏览器本地为身份证和证件图片添加文字水印，实时调整颜色、透明度与角度，无需上传。",
     },
   },
 ];

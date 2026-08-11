@@ -1,12 +1,5 @@
-import { ToolWorkspace } from "@/components/tool-workspace";
-import { getToolBySlug } from "@/lib/tools/registry";
+import { HomeExperience } from "@/components/home-experience";
 
 export default function HomePage() {
-  const defaultTool = getToolBySlug("base64");
-
-  if (!defaultTool) {
-    return null;
-  }
-
-  return <ToolWorkspace definition={defaultTool} />;
+  return <HomeExperience />;
 }

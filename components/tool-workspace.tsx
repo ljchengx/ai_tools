@@ -220,7 +220,7 @@ function placeholderFor(slug: ToolDefinition["slug"], locale: "zh" | "en"): stri
   }
 
   if (slug === "json-formatter") {
-    return '{\n  "name": "Pulse"\n}';
+    return '{\n  "name": "ZHIYE"\n}';
   }
 
   return locale === "zh"
