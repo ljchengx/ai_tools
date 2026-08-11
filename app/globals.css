@@ -1,33 +1,38 @@
 :root {
   /* Color system */
-  --color-canvas: #f8f9fa;
-  --color-canvas-deep: #edeeef;
-  --color-paper: #ffffff;
-  --color-paper-soft: rgba(255, 255, 255, 0.84);
-  --color-paper-quiet: rgba(243, 244, 245, 0.82);
-  --color-ink: #191c1d;
-  --color-ink-soft: #3f4852;
-  --color-muted: #66717e;
-  --color-quiet: #929ba5;
-  --color-line: rgba(42, 49, 56, 0.1);
-  --color-line-strong: rgba(42, 49, 56, 0.18);
-  --color-line-light: rgba(255, 255, 255, 0.86);
-  --color-amber: #647b72;
-  --color-amber-deep: #405a50;
-  --color-amber-hover: #526c62;
-  --color-amber-wash: rgba(64, 90, 80, 0.08);
-  --color-amber-glow: rgba(64, 90, 80, 0.14);
-  --color-action-accent: #6f8179;
-  --surface-action: #edf2ef;
-  --surface-action-hover: #e2eae6;
-  --surface-action-pressed: #d6e1dc;
-  --text-action: #405a50;
-  --border-action: rgba(64, 90, 80, 0.2);
-  --border-action-hover: rgba(64, 90, 80, 0.32);
-  --color-sage: #5e7b70;
-  --color-sage-wash: rgba(94, 123, 112, 0.1);
-  --color-clay: #a54f47;
-  --color-clay-wash: rgba(165, 79, 71, 0.09);
+  --color-canvas: #e9f0ef;
+  --color-canvas-deep: #dbe6e5;
+  --color-paper: #fcfdfb;
+  --color-paper-soft: rgba(252, 253, 251, 0.86);
+  --color-paper-quiet: rgba(225, 234, 233, 0.82);
+  --color-ink: #172c33;
+  --color-ink-soft: #3b535b;
+  --color-muted: #657b82;
+  --color-quiet: #99a9ad;
+  --color-line: rgba(31, 65, 73, 0.14);
+  --color-line-strong: rgba(31, 65, 73, 0.24);
+  --color-line-light: rgba(255, 255, 255, 0.82);
+  --brand-cobalt: #2f5f96;
+  --brand-cobalt-deep: #21446f;
+  --brand-cobalt-hover: #274f80;
+  --brand-cobalt-wash: rgba(47, 95, 150, 0.1);
+  --brand-cobalt-glow: rgba(47, 95, 150, 0.17);
+  --color-amber: var(--brand-cobalt);
+  --color-amber-deep: var(--brand-cobalt-deep);
+  --color-amber-hover: var(--brand-cobalt-hover);
+  --color-amber-wash: var(--brand-cobalt-wash);
+  --color-amber-glow: var(--brand-cobalt-glow);
+  --color-action-accent: #5476a5;
+  --surface-action: #e7eef7;
+  --surface-action-hover: #d9e5f2;
+  --surface-action-pressed: #cbd9e9;
+  --text-action: #21446f;
+  --border-action: rgba(33, 68, 111, 0.24);
+  --border-action-hover: rgba(33, 68, 111, 0.38);
+  --color-sage: #3f7a72;
+  --color-sage-wash: rgba(63, 122, 114, 0.1);
+  --color-clay: #c15f55;
+  --color-clay-wash: rgba(193, 95, 85, 0.1);
   --color-white: #fff;
 
   /* Typography */
@@ -53,25 +58,25 @@
   --content-max: 1560px;
 
   /* Material and elevation */
-  --surface-sidebar: rgba(243, 244, 245, 0.9);
-  --surface-settings: rgba(255, 255, 255, 0.88);
-  --surface-input: rgba(248, 249, 250, 0.86);
-  --surface-output: rgba(255, 255, 255, 0.9);
-  --surface-control: rgba(225, 227, 228, 0.64);
+  --surface-sidebar: rgba(222, 232, 231, 0.92);
+  --surface-settings: rgba(252, 253, 251, 0.9);
+  --surface-input: rgba(235, 242, 241, 0.9);
+  --surface-output: rgba(252, 253, 251, 0.92);
+  --surface-control: rgba(204, 219, 218, 0.7);
   --surface-control-selected: rgba(255, 255, 255, 0.96);
-  --shadow-sidebar: 10px 0 28px rgba(31, 41, 55, 0.025);
-  --shadow-panel: 0 8px 24px rgba(31, 41, 55, 0.05), 0 2px 5px rgba(31, 41, 55, 0.035);
-  --shadow-panel-hover: 0 12px 30px rgba(31, 41, 55, 0.075), 0 3px 7px rgba(31, 41, 55, 0.04);
-  --shadow-control: 0 1px 4px rgba(31, 41, 55, 0.065);
-  --shadow-button: 0 5px 14px rgba(31, 41, 55, 0.07);
-  --shadow-button-hover: 0 8px 20px rgba(31, 41, 55, 0.1);
-  --shadow-focus: 0 14px 38px rgba(31, 41, 55, 0.09), 0 0 0 1px rgba(64, 90, 80, 0.3), 0 0 28px rgba(64, 90, 80, 0.1);
-  --surface-tool-input: rgba(244, 246, 247, 0.92);
-  --surface-tool-output: rgba(255, 255, 255, 0.96);
-  --surface-watermark-source: rgba(248, 249, 250, 0.86);
-  --surface-watermark-preview: rgba(241, 244, 244, 0.74);
-  --border-watermark-preview: rgba(64, 90, 80, 0.15);
-  --shadow-watermark-preview: 0 12px 34px rgba(31, 41, 55, 0.07), 0 2px 6px rgba(31, 41, 55, 0.035);
+  --shadow-sidebar: 10px 0 28px rgba(25, 57, 65, 0.045);
+  --shadow-panel: 0 8px 24px rgba(25, 57, 65, 0.07), 0 2px 5px rgba(25, 57, 65, 0.04);
+  --shadow-panel-hover: 0 12px 30px rgba(25, 57, 65, 0.1), 0 3px 7px rgba(25, 57, 65, 0.05);
+  --shadow-control: 0 1px 4px rgba(25, 57, 65, 0.08);
+  --shadow-button: 0 5px 14px rgba(33, 68, 111, 0.11);
+  --shadow-button-hover: 0 8px 20px rgba(33, 68, 111, 0.16);
+  --shadow-focus: 0 14px 38px rgba(25, 57, 65, 0.12), 0 0 0 1px rgba(47, 95, 150, 0.36), 0 0 28px rgba(47, 95, 150, 0.15);
+  --surface-tool-input: rgba(235, 242, 241, 0.94);
+  --surface-tool-output: rgba(252, 253, 251, 0.96);
+  --surface-watermark-source: rgba(238, 244, 243, 0.9);
+  --surface-watermark-preview: rgba(225, 235, 234, 0.82);
+  --border-watermark-preview: rgba(33, 68, 111, 0.18);
+  --shadow-watermark-preview: 0 12px 34px rgba(25, 57, 65, 0.1), 0 2px 6px rgba(25, 57, 65, 0.045);
 
   /* Motion */
   --duration-fast: 160ms;
@@ -171,10 +176,10 @@ a {
 }
 
 .pulse-day--night {
-  --color-canvas: #f1f3f4;
-  --color-canvas-deep: #e7e8e9;
-  --surface-sidebar: rgba(237, 238, 239, 0.92);
-  --surface-input: rgba(243, 244, 245, 0.88);
+  --color-canvas: #e2ebeb;
+  --color-canvas-deep: #d2dfdf;
+  --surface-sidebar: rgba(215, 228, 227, 0.94);
+  --surface-input: rgba(229, 239, 238, 0.92);
 }
 
 .pulse-sidebar {
