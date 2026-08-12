@@ -230,7 +230,12 @@ function TimestampWorkspaceContent({ definition }: { definition: ToolDefinition 
                 step={mode === "date-to-timestamp" ? "1" : undefined}
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                onKeyDown={(event) => { if (event.key === "Enter") convert(); }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                    event.preventDefault();
+                    convert();
+                  }
+                }}
                 placeholder={mode === "timestamp-to-date" ? "例如：1723456789" : undefined}
               />
               <div className="pulse-timestamp-input-actions">

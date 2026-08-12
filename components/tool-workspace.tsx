@@ -765,6 +765,16 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
               ref={inputRef}
               value={input}
               onChange={(event) => updateInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (
+                  event.key === "Enter"
+                  && (event.ctrlKey || event.metaKey)
+                  && !event.nativeEvent.isComposing
+                ) {
+                  event.preventDefault();
+                  run();
+                }
+              }}
               placeholder={placeholderFor(definition.slug, locale)}
               spellCheck={false}
               aria-label={copy.input}

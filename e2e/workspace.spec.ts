@@ -59,7 +59,7 @@ test("Base64 可处理 UTF-8 文本", async ({ page }) => {
 
   await expect(page).toHaveTitle("Base64 编码解码 - UTF-8 与 URL Safe 在线工具 | 知页");
   await page.getByLabel("输入文本").fill("你好🙂");
-  await page.getByRole("button", { name: "执行编码文本" }).click();
+  await page.getByLabel("输入文本").press("Control+Enter");
 
   await expect(page.getByLabel("处理结果")).toHaveValue("5L2g5aW98J+Zgg==");
   await expect(page.getByRole("status")).toContainText("文本已编码");
@@ -69,16 +69,29 @@ test("JSON 在出错时显示行列位置", async ({ page }) => {
   await page.goto("/tools/json-formatter");
 
   await page.getByLabel("输入文本").fill('{\n  "name": "MORPH",\n}');
-  await page.getByRole("button", { name: "执行格式化" }).click();
+  await page.getByLabel("输入文本").press("Control+Enter");
 
   await expect(page.getByRole("status")).toContainText("第");
+});
+
+test("JSON 普通回车换行，组合键执行格式化", async ({ page }) => {
+  await page.goto("/tools/json-formatter");
+
+  const input = page.getByLabel("输入文本");
+  await input.fill('{"name":"知页"}');
+  await input.press("Enter");
+  await expect(input).toHaveValue('{"name":"知页"}\n');
+  await expect(page.getByLabel("处理结果")).toHaveValue("");
+
+  await input.press("Control+Enter");
+  await expect(page.getByLabel("处理结果")).toHaveValue('{\n  "name": "知页"\n}');
 });
 
 test("Markdown 清理保留可读内容", async ({ page }) => {
   await page.goto("/tools/markdown-cleaner");
 
   await page.getByLabel("输入文本").fill("# 标题\n\n**保留文本** [链接](https://example.com)");
-  await page.getByRole("button", { name: "执行清理文本" }).click();
+  await page.getByLabel("输入文本").press("Control+Enter");
 
   await expect(page.getByLabel("处理结果")).toHaveValue("标题\n\n保留文本 链接");
 });
@@ -257,7 +270,7 @@ test("时间戳工具支持双向转换和真实交互", async ({ page }) => {
   await expect(page).toHaveTitle("Unix 时间戳转换 - 秒、毫秒与日期时间互转 | 知页");
   await expect(page.getByRole("link", { name: "时间戳" })).toHaveAttribute("aria-current", "page");
   await page.getByLabel("输入 Unix 时间戳").fill("0");
-  await page.getByRole("button", { name: "开始转换" }).click();
+  await page.getByLabel("输入 Unix 时间戳").press("Enter");
   await expect(page.getByText("1970-01-01T00:00:00.000Z")).toBeVisible();
   await expect(page.getByRole("status")).toContainText("按秒解析");
 
