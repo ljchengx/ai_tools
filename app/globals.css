@@ -8022,6 +8022,14 @@ body {
   transition: color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
+.zhiye-product-nav__github-mark {
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  mask: url("/github-mark.svg") center / contain no-repeat;
+  -webkit-mask: url("/github-mark.svg") center / contain no-repeat;
+}
+
 .zhiye-product-nav__github:hover {
   color: #171c2f;
   transform: translateY(-2px);

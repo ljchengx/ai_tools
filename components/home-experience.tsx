@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, Code2 } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
@@ -125,7 +125,7 @@ export function HomeExperience() {
               aria-label="在 GitHub 查看知页源码"
               title="GitHub"
             >
-              <Code2 aria-hidden="true" size={20} strokeWidth={1.7} />
+              <span className="zhiye-product-nav__github-mark" aria-hidden="true" />
             </a>
             <Link href="/tools" className="zhiye-product-nav__cta">
               进入工作台
