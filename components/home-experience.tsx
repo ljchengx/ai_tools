@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 
 import { toolDefinitions } from "@/lib/tools/registry";
 
 import { PulseShell } from "./pulse-shell";
+import { HomePhysicsLab } from "./home-physics-lab";
 import { ToolIcon } from "./tool-icon";
 
 const productPrinciples = [
@@ -156,10 +157,28 @@ export function HomeExperience() {
             </motion.div>
 
             <motion.div
-              className="zhiye-product-hero__visual-shell"
+              className="zhiye-product-hero__physics"
               initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : 0.08 }}
+            >
+              <HomePhysicsLab placement="hero" />
+            </motion.div>
+          </section>
+
+          <section className="zhiye-product-intro" aria-label="知页简介">
+            <p>不是堆叠功能的工具站。</p>
+            <h2>每一个工具，都只解决一个常见问题。</h2>
+            <span>需要使用时进入工作台，选择工具后直接处理。</span>
+          </section>
+
+          <section className="zhiye-product-gallery" aria-label="知页视觉展示区">
+            <motion.div
+              className="zhiye-product-hero__visual-shell"
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.18 }}
+              transition={{ duration: reducedMotion ? 0 : 0.5 }}
             >
               <div
                 ref={carouselStageRef}
@@ -182,25 +201,17 @@ export function HomeExperience() {
                   }
                 }}
                 onKeyDown={(event) => {
-                  if (event.key === "ArrowLeft") {
-                    showPreviousSlide();
-                  }
-                  if (event.key === "ArrowRight") {
-                    showNextSlide();
-                  }
+                  if (event.key === "ArrowLeft") showPreviousSlide();
+                  if (event.key === "ArrowRight") showNextSlide();
                 }}
               >
-                <div
-                  className="zhiye-product-carousel__track"
-                  style={{ transform: `translate3d(-${activeSlide * 100}%, 0, 0)` }}
-                >
+                <div className="zhiye-product-carousel__track" style={{ transform: `translate3d(-${activeSlide * 100}%, 0, 0)` }}>
                   {homeSlides.map((slide, index) => (
                     <div className="zhiye-product-carousel__slide" key={slide.src} aria-hidden={index !== activeSlide}>
                       <img src={slide.src} alt={index === activeSlide ? slide.alt : ""} loading={index < 2 ? "eager" : "lazy"} />
                     </div>
                   ))}
                 </div>
-
                 <div className="zhiye-product-carousel__dots" aria-label="选择展示图片">
                   {homeSlides.map((slide, index) => (
                     <button
@@ -215,12 +226,6 @@ export function HomeExperience() {
                 </div>
               </div>
             </motion.div>
-          </section>
-
-          <section className="zhiye-product-intro" aria-label="知页简介">
-            <p>不是堆叠功能的工具站。</p>
-            <h2>每一个工具，都只解决一个常见问题。</h2>
-            <span>需要使用时进入工作台，选择工具后直接处理。</span>
           </section>
 
           <section className="zhiye-product-principles" id="principles" aria-labelledby="principles-title">

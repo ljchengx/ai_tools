@@ -11,7 +11,7 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
   await expect(promises.getByText("无需登录", { exact: true })).toBeVisible();
   await expect(promises.getByText("本地处理", { exact: true })).toBeVisible();
   await expect(promises.getByText("始终免费", { exact: true })).toBeVisible();
-  const carousel = page.getByRole("region", { name: "知页视觉展示" });
+  const carousel = page.getByRole("region", { name: "知页视觉展示", exact: true });
   await expect(carousel).toBeVisible();
   await expect(carousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
   await carousel.getByRole("button", { name: "查看第 2 张图片" }).click();
@@ -92,7 +92,7 @@ test("减少动态效果时首页仍可进入工作台工具", async ({ browser 
   await page.goto("/");
 
   await expect(page.locator("canvas")).toHaveCount(0);
-  const markdownLink = page.getByRole("link", { name: "打开Markdown 清理" });
+  const markdownLink = page.locator(".zhiye-product-tools").getByRole("link", { name: "打开Markdown 清理" });
   await expect(markdownLink).toBeVisible();
   await markdownLink.click();
   await expect(page).toHaveURL(/\/tools\/markdown-cleaner/);
@@ -102,7 +102,7 @@ test("减少动态效果时首页仍可进入工作台工具", async ({ browser 
 test("首页轮播会自动播放，并尊重减少动态效果设置", async ({ browser }) => {
   const page = await browser.newPage();
   await page.goto("/");
-  const carousel = page.getByRole("region", { name: "知页视觉展示" });
+  const carousel = page.getByRole("region", { name: "知页视觉展示", exact: true });
   await expect(carousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
   await expect(carousel.getByRole("button", { name: "查看第 2 张图片" })).toHaveAttribute("aria-current", "true", { timeout: 6000 });
   await page.close();
@@ -110,7 +110,7 @@ test("首页轮播会自动播放，并尊重减少动态效果设置", async ({
   const reducedContext = await browser.newContext({ reducedMotion: "reduce" });
   const reducedPage = await reducedContext.newPage();
   await reducedPage.goto("/");
-  const reducedCarousel = reducedPage.getByRole("region", { name: "知页视觉展示" });
+  const reducedCarousel = reducedPage.getByRole("region", { name: "知页视觉展示", exact: true });
   await expect(reducedCarousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
   await reducedPage.waitForTimeout(4600);
   await expect(reducedCarousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
@@ -120,7 +120,8 @@ test("首页轮播会自动播放，并尊重减少动态效果设置", async ({
 test("首页展台仅在桌面端启用轻微视差", async ({ browser }) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1024 } });
   await page.goto("/");
-  const stage = page.getByRole("region", { name: "知页视觉展示" });
+  const stage = page.getByRole("region", { name: "知页视觉展示", exact: true });
+  await stage.scrollIntoViewIfNeeded();
   const initialTransform = await stage.evaluate((element) => getComputedStyle(element).transform);
   const bounds = await stage.boundingBox();
   expect(bounds).not.toBeNull();
@@ -132,8 +133,43 @@ test("首页展台仅在桌面端启用轻微视差", async ({ browser }) => {
 
   const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await mobilePage.goto("/");
-  await expect(mobilePage.getByRole("region", { name: "知页视觉展示" })).toHaveCSS("transform", "none");
+  await expect(mobilePage.getByRole("region", { name: "知页视觉展示", exact: true })).toHaveCSS("transform", "none");
   await mobilePage.close();
+});
+
+test("首页物理实验台支持拖拽、重置和真实工具导航", async ({ page }) => {
+  await page.goto("/");
+  const lab = page.getByLabel("可拖拽的知页工具");
+  await lab.scrollIntoViewIfNeeded();
+  await expect(page.getByRole("heading", { name: "知页工具实验台" })).toBeAttached();
+  await expect(lab.getByRole("link")).toHaveCount(5);
+  await expect(lab).toHaveClass(/is-ready/);
+
+  const base64 = lab.getByRole("link", { name: "打开Base64 编解码" });
+  const before = await base64.boundingBox();
+  expect(before).not.toBeNull();
+  await page.mouse.move(before!.x + before!.width / 2, before!.y + before!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(before!.x + before!.width / 2 + 90, before!.y - 70, { steps: 6 });
+  await page.mouse.up();
+  expect(new URL(page.url()).pathname).toBe("/");
+
+  await page.getByRole("button", { name: "重置实验台" }).click();
+  await expect(lab).toHaveClass(/is-ready/);
+  await base64.click();
+  await expect(page).toHaveURL(/\/tools\/base64$/);
+});
+
+test("减少动态效果时物理实验台保持静态可访问", async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  const page = await context.newPage();
+  await page.goto("/");
+  const lab = page.getByLabel("可拖拽的知页工具");
+  await lab.scrollIntoViewIfNeeded();
+  await expect(lab).toHaveClass(/is-static/);
+  await expect(page.getByRole("button", { name: "重置实验台" })).toHaveCount(0);
+  await expect(lab.getByRole("link", { name: "打开时间戳转换" })).toBeVisible();
+  await context.close();
 });
 
 test("Base64 支持 URL-safe 输出与结果交换", async ({ page }) => {
