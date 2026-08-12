@@ -1,4 +1,4 @@
-import { Binary, Braces, Eraser, Stamp } from "lucide-react";
+import { Binary, Braces, Clock3, Eraser, Stamp } from "lucide-react";
 
 import type { ToolIconName } from "@/lib/tools/registry";
 
@@ -7,6 +7,7 @@ const icons = {
   braces: Braces,
   eraser: Eraser,
   stamp: Stamp,
+  clock: Clock3,
 } as const;
 
 interface ToolIconProps {

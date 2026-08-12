@@ -1,6 +1,6 @@
-export type ToolSlug = "base64" | "json-formatter" | "markdown-cleaner" | "image-watermark";
+export type ToolSlug = "base64" | "json-formatter" | "markdown-cleaner" | "image-watermark" | "timestamp-converter";
 
-export type ToolIconName = "binary" | "braces" | "eraser" | "stamp";
+export type ToolIconName = "binary" | "braces" | "eraser" | "stamp" | "clock";
 
 export type ToolAccent = "amber" | "sage" | "clay";
 
@@ -80,6 +80,25 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     metadata: {
       title: "Markdown 转纯文本 - 在线去除 Markdown 格式",
       description: "在浏览器本地去除 Markdown 语法标记，保留段落、列表、代码、链接文字与表格结构。",
+    },
+  },
+  {
+    slug: "timestamp-converter",
+    component: "timestamp-converter",
+    title: "时间戳转换",
+    titleEn: "Timestamp Converter",
+    shortTitle: "时间戳",
+    shortTitleEn: "Timestamp",
+    description: "在时间戳与日期时间之间准确换算。",
+    descriptionEn: "Convert precisely between timestamps and date-time values.",
+    category: "时间处理",
+    categoryEn: "Time conversion",
+    keywords: ["时间戳", "Unix", "timestamp", "日期", "秒", "毫秒", "UTC"],
+    icon: "clock",
+    accent: "sage",
+    metadata: {
+      title: "Unix 时间戳转换 - 秒、毫秒与日期时间互转",
+      description: "在浏览器本地进行 Unix 时间戳与日期时间转换，支持秒、毫秒、本地时间和 UTC。",
     },
   },
   {

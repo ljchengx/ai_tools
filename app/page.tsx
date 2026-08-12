@@ -4,14 +4,14 @@ import { HomeExperience } from "@/components/home-experience";
 import { toolDefinitions } from "@/lib/tools/registry";
 
 const title = "知页 - 免费的浏览器本地工具箱";
-const description = "免费使用 Base64 编解码、JSON 格式化、Markdown 清理和图片水印工具。无需登录，文本、数据与图片均在浏览器本地处理。";
+const description = "免费使用 Base64 编解码、JSON 格式化、Markdown 清理、时间戳转换和图片水印工具。无需登录，文本、数据与图片均在浏览器本地处理。";
 
 export const metadata: Metadata = {
   title: {
     absolute: title,
   },
   description,
-  keywords: ["知页", "免费在线工具", "浏览器本地工具", "Base64 编解码", "JSON 格式化", "Markdown 转纯文本", "图片水印"],
+  keywords: ["知页", "免费在线工具", "浏览器本地工具", "Base64 编解码", "JSON 格式化", "Markdown 转纯文本", "时间戳转换", "图片水印"],
   alternates: {
     canonical: "/",
   },

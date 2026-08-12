@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("首页作为产品介绍页，并可进入独立工作台", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page).toHaveTitle("知页 - AI 时代的浏览器本地工具箱");
+  await expect(page).toHaveTitle("知页 - 免费的浏览器本地工具箱");
   await expect(page.getByRole("link", { name: "知页首页" })).toBeVisible();
   await expect(page.locator("#home-title")).toContainText("把琐碎处理");
   await expect(page.locator("#home-title")).toContainText("留在这一页");
@@ -11,6 +11,11 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
   await expect(promises.getByText("无需登录", { exact: true })).toBeVisible();
   await expect(promises.getByText("本地处理", { exact: true })).toBeVisible();
   await expect(promises.getByText("始终免费", { exact: true })).toBeVisible();
+  const carousel = page.getByRole("region", { name: "知页视觉展示" });
+  await expect(carousel).toBeVisible();
+  await expect(carousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
+  await carousel.getByRole("button", { name: "查看第 2 张图片" }).click();
+  await expect(carousel.getByRole("button", { name: "查看第 2 张图片" })).toHaveAttribute("aria-current", "true");
 
   await page.getByRole("link", { name: "进入工作台" }).first().click();
   await expect(page).toHaveURL(/\/tools$/);
@@ -94,6 +99,43 @@ test("减少动态效果时首页仍可进入工作台工具", async ({ browser 
   await context.close();
 });
 
+test("首页轮播会自动播放，并尊重减少动态效果设置", async ({ browser }) => {
+  const page = await browser.newPage();
+  await page.goto("/");
+  const carousel = page.getByRole("region", { name: "知页视觉展示" });
+  await expect(carousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
+  await expect(carousel.getByRole("button", { name: "查看第 2 张图片" })).toHaveAttribute("aria-current", "true", { timeout: 6000 });
+  await page.close();
+
+  const reducedContext = await browser.newContext({ reducedMotion: "reduce" });
+  const reducedPage = await reducedContext.newPage();
+  await reducedPage.goto("/");
+  const reducedCarousel = reducedPage.getByRole("region", { name: "知页视觉展示" });
+  await expect(reducedCarousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
+  await reducedPage.waitForTimeout(4600);
+  await expect(reducedCarousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
+  await reducedContext.close();
+});
+
+test("首页展台仅在桌面端启用轻微视差", async ({ browser }) => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1024 } });
+  await page.goto("/");
+  const stage = page.getByRole("region", { name: "知页视觉展示" });
+  const initialTransform = await stage.evaluate((element) => getComputedStyle(element).transform);
+  const bounds = await stage.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.move(bounds!.x + bounds!.width * 0.9, bounds!.y + bounds!.height * 0.15);
+  await expect.poll(() => stage.evaluate((element) => getComputedStyle(element).transform)).not.toBe(initialTransform);
+  await page.mouse.move(10, 10);
+  await expect.poll(() => stage.evaluate((element) => getComputedStyle(element).transform), { timeout: 1500 }).toBe(initialTransform);
+  await page.close();
+
+  const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await mobilePage.goto("/");
+  await expect(mobilePage.getByRole("region", { name: "知页视觉展示" })).toHaveCSS("transform", "none");
+  await mobilePage.close();
+});
+
 test("Base64 支持 URL-safe 输出与结果交换", async ({ page }) => {
   await page.goto("/tools/base64");
 
@@ -168,4 +210,25 @@ test("图片水印支持四项自定义并下载原尺寸结果", async ({ page 
   await page.getByRole("button", { name: "下载水印图片" }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("id-card-watermarked.png");
+});
+
+test("时间戳工具支持双向转换和真实交互", async ({ page }) => {
+  await page.goto("/tools/timestamp-converter");
+
+  await expect(page).toHaveTitle("Unix 时间戳转换 - 秒、毫秒与日期时间互转 | 知页");
+  await expect(page.getByRole("link", { name: "时间戳" })).toHaveAttribute("aria-current", "page");
+  await page.getByLabel("输入 Unix 时间戳").fill("0");
+  await page.getByRole("button", { name: "开始转换" }).click();
+  await expect(page.getByText("1970-01-01T00:00:00.000Z")).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("按秒解析");
+
+  await page.getByRole("button", { name: "日期转时间戳" }).click();
+  await page.getByRole("button", { name: "UTC", exact: true }).click();
+  await page.getByLabel("选择要转换的日期和时间").fill("1970-01-01T00:00");
+  await page.getByRole("button", { name: "开始转换" }).click();
+  const secondsRow = page.getByText("秒时间戳", { exact: true }).locator("..");
+  await expect(secondsRow.locator("code")).toHaveText("0");
+
+  await page.getByRole("button", { name: "使用当前时间" }).click();
+  await expect(page.getByLabel("选择要转换的日期和时间")).not.toHaveValue("");
 });

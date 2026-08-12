@@ -4,6 +4,12 @@ import { decodeBase64, encodeBase64, TextTransformError } from "../lib/tools/bas
 import { formatJson, getJsonStructureStats, getJsonSummary, JsonTransformError, minifyJson } from "../lib/tools/json";
 import { stripMarkdown } from "../lib/tools/markdown";
 import { searchTools } from "../lib/tools/registry";
+import {
+  dateTimeToTimestamp,
+  detectTimestampUnit,
+  timestampToDate,
+  TimestampTransformError,
+} from "../lib/tools/timestamp";
 
 describe("Base64 文本转换", () => {
   it("使用 UTF-8 正确编码和解码中文与 Emoji", () => {
@@ -102,11 +108,35 @@ describe("Markdown 清理", () => {
   });
 });
 
+describe("时间戳转换", () => {
+  it("支持 Unix 纪元与负时间戳", () => {
+    expect(timestampToDate("0", "seconds").date.toISOString()).toBe("1970-01-01T00:00:00.000Z");
+    expect(timestampToDate(-1, "seconds").date.toISOString()).toBe("1969-12-31T23:59:59.000Z");
+  });
+
+  it("自动识别秒和毫秒并保持同一时刻", () => {
+    expect(detectTimestampUnit("1723456789")).toBe("seconds");
+    expect(detectTimestampUnit("1723456789000")).toBe("milliseconds");
+    expect(timestampToDate("1723456789").date.getTime()).toBe(timestampToDate("1723456789000").date.getTime());
+  });
+
+  it("按 UTC 日期生成秒和毫秒时间戳", () => {
+    expect(dateTimeToTimestamp("1970-01-01T00:00:00", "seconds", "utc")).toBe(0);
+    expect(dateTimeToTimestamp("2024-01-02T03:04:05.123", "milliseconds", "utc")).toBe(Date.UTC(2024, 0, 2, 3, 4, 5, 123));
+  });
+
+  it("拒绝非数字时间戳和不存在的日期", () => {
+    expect(() => timestampToDate("abc")).toThrow(TimestampTransformError);
+    expect(() => dateTimeToTimestamp("2024-02-30T12:00:00", "seconds", "local")).toThrow("该日期不存在");
+  });
+});
+
 describe("工具注册表", () => {
   it("支持中文和英文关键词搜索", () => {
     expect(searchTools("编码").map((tool) => tool.slug)).toEqual(["base64"]);
     expect(searchTools("JSON").map((tool) => tool.slug)).toEqual(["json-formatter"]);
     expect(searchTools("markdown").map((tool) => tool.slug)).toEqual(["markdown-cleaner"]);
     expect(searchTools("身份证").map((tool) => tool.slug)).toEqual(["image-watermark"]);
+    expect(searchTools("时间戳").map((tool) => tool.slug)).toEqual(["timestamp-converter"]);
   });
 });

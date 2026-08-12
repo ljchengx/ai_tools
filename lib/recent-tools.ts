@@ -34,5 +34,9 @@ export function recordRecentTool(slug: ToolSlug): ToolSlug[] {
 }
 
 function isToolSlug(value: unknown): value is ToolSlug {
-  return value === "base64" || value === "json-formatter" || value === "markdown-cleaner" || value === "image-watermark";
+  return value === "base64"
+    || value === "json-formatter"
+    || value === "markdown-cleaner"
+    || value === "image-watermark"
+    || value === "timestamp-converter";
 }

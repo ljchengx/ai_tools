@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 import { toolDefinitions } from "@/lib/tools/registry";
 
@@ -24,8 +25,83 @@ const productPrinciples = [
   },
 ];
 
+const homeSlides = [
+  { src: "/home-carousel/01_glass_pebble_master.webp", alt: "阳光下的半透明玻璃圆石" },
+  { src: "/home-carousel/01_paper_topography_master.webp", alt: "层叠起伏的白色纸艺" },
+  { src: "/home-carousel/02_ceramic_calm.webp", alt: "嵌有镜面的白色陶瓷圆环" },
+  { src: "/home-carousel/02_glass_ribbon.webp", alt: "阳光下弯曲的透明玻璃缎带" },
+  { src: "/home-carousel/03_frosted_layers.webp", alt: "层叠的半透明磨砂玻璃" },
+  { src: "/home-carousel/03_sunlit_gallery.webp", alt: "安静明亮的日光展厅" },
+  { src: "/home-carousel/04_prism_arch.webp", alt: "半透明玻璃拱门" },
+  { src: "/home-carousel/04_water_ripples.webp", alt: "带有水波纹理的白色圆盘" },
+  { src: "/home-carousel/05_linen_fold.webp", alt: "柔和起伏的亚麻织物" },
+  { src: "/home-carousel/06_pale_moon_wall.webp", alt: "墙面上的淡蓝月影" },
+  { src: "/home-carousel/09_orbital_ring.webp", alt: "悬浮的半透明轨道圆环" },
+  { src: "/home-carousel/10_silica_cube.webp", alt: "阳光下的半透明硅石方块" },
+  { src: "/home-carousel/11_cloud_capsule.webp", alt: "柔和透明的云状胶囊" },
+  { src: "/home-carousel/12_soft_spiral.webp", alt: "半透明的柔和螺旋造型" },
+] as const;
+
 export function HomeExperience() {
   const reducedMotion = useReducedMotion() ?? false;
+  const carouselStageRef = useRef<HTMLDivElement>(null);
+  const tiltFrameRef = useRef<number | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [carouselPaused, setCarouselPaused] = useState(false);
+
+  useEffect(() => {
+    if (reducedMotion || carouselPaused) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % homeSlides.length);
+    }, 4200);
+
+    return () => window.clearInterval(timer);
+  }, [carouselPaused, reducedMotion]);
+
+  useEffect(() => () => {
+    if (tiltFrameRef.current) {
+      window.cancelAnimationFrame(tiltFrameRef.current);
+    }
+  }, []);
+
+  const showPreviousSlide = () => {
+    setActiveSlide((current) => (current - 1 + homeSlides.length) % homeSlides.length);
+  };
+
+  const showNextSlide = () => {
+    setActiveSlide((current) => (current + 1) % homeSlides.length);
+  };
+
+  const updateCarouselTilt = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (reducedMotion || window.matchMedia("(max-width: 900px), (pointer: coarse)").matches) {
+      return;
+    }
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const horizontal = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+    const vertical = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+
+    if (tiltFrameRef.current) {
+      window.cancelAnimationFrame(tiltFrameRef.current);
+    }
+    tiltFrameRef.current = window.requestAnimationFrame(() => {
+      carouselStageRef.current?.style.setProperty("--carousel-rotate-x", `${1 - vertical * 1.5}deg`);
+      carouselStageRef.current?.style.setProperty("--carousel-rotate-y", `${-2 + horizontal * 2.5}deg`);
+    });
+  };
+
+  const resetCarouselTilt = () => {
+    if (tiltFrameRef.current) {
+      window.cancelAnimationFrame(tiltFrameRef.current);
+    }
+    tiltFrameRef.current = window.requestAnimationFrame(() => {
+      carouselStageRef.current?.style.removeProperty("--carousel-rotate-x");
+      carouselStageRef.current?.style.removeProperty("--carousel-rotate-y");
+    });
+  };
 
   return (
     <PulseShell surface="home">
@@ -80,16 +156,63 @@ export function HomeExperience() {
             </motion.div>
 
             <motion.div
-              className="zhiye-product-hero__visual"
+              className="zhiye-product-hero__visual-shell"
               initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : 0.08 }}
-              aria-hidden="true"
             >
-              <img src="/studio-object-home.png" alt="" />
-              <div className="zhiye-product-hero__note">
-                <ShieldCheck size={18} strokeWidth={1.55} />
-                <span>内容仅在你的浏览器中处理</span>
+              <div
+                ref={carouselStageRef}
+                className="zhiye-product-hero__visual"
+                role="region"
+                aria-roledescription="轮播图"
+                aria-label="知页视觉展示"
+                tabIndex={0}
+                onMouseMove={updateCarouselTilt}
+                onMouseEnter={() => setCarouselPaused(true)}
+                onMouseLeave={() => {
+                  setCarouselPaused(false);
+                  resetCarouselTilt();
+                }}
+                onFocus={() => setCarouselPaused(true)}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setCarouselPaused(false);
+                    resetCarouselTilt();
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "ArrowLeft") {
+                    showPreviousSlide();
+                  }
+                  if (event.key === "ArrowRight") {
+                    showNextSlide();
+                  }
+                }}
+              >
+                <div
+                  className="zhiye-product-carousel__track"
+                  style={{ transform: `translate3d(-${activeSlide * 100}%, 0, 0)` }}
+                >
+                  {homeSlides.map((slide, index) => (
+                    <div className="zhiye-product-carousel__slide" key={slide.src} aria-hidden={index !== activeSlide}>
+                      <img src={slide.src} alt={index === activeSlide ? slide.alt : ""} loading={index < 2 ? "eager" : "lazy"} />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="zhiye-product-carousel__dots" aria-label="选择展示图片">
+                  {homeSlides.map((slide, index) => (
+                    <button
+                      type="button"
+                      key={slide.src}
+                      className={index === activeSlide ? "is-active" : ""}
+                      onClick={() => setActiveSlide(index)}
+                      aria-label={`查看第 ${index + 1} 张图片`}
+                      aria-current={index === activeSlide ? "true" : undefined}
+                    />
+                  ))}
+                </div>
               </div>
             </motion.div>
           </section>

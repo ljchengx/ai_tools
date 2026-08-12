@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ImageWatermarkWorkspace } from "@/components/image-watermark-workspace";
+import { TimestampWorkspace } from "@/components/timestamp-workspace";
 import { ToolWorkspace } from "@/components/tool-workspace";
 import { getToolBySlug, toolDefinitions } from "@/lib/tools/registry";
 
@@ -56,6 +57,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   if (tool.slug === "image-watermark") {
     return <ImageWatermarkWorkspace definition={tool} />;
+  }
+
+  if (tool.slug === "timestamp-converter") {
+    return <TimestampWorkspace definition={tool} />;
   }
 
   return <ToolWorkspace definition={tool} />;
