@@ -30,6 +30,64 @@ interface DragState {
   dragged: boolean;
 }
 
+interface SceneLayout {
+  id: string;
+  positions: readonly { x: number; y: number; angle: number; spin: number }[];
+}
+
+const SCENE_LAYOUTS: readonly SceneLayout[] = [
+  {
+    id: "center-stack",
+    positions: [
+      { x: 0.36, y: 28, angle: -0.05, spin: 0.001 },
+      { x: 0.48, y: -44, angle: 0.03, spin: -0.002 },
+      { x: 0.59, y: -116, angle: 0.08, spin: 0.003 },
+      { x: 0.42, y: -188, angle: -0.04, spin: -0.004 },
+      { x: 0.55, y: -260, angle: 0.06, spin: 0.005 },
+    ],
+  },
+  {
+    id: "twin-towers",
+    positions: [
+      { x: 0.28, y: -40, angle: -0.08, spin: -0.003 },
+      { x: 0.72, y: -20, angle: 0.07, spin: 0.003 },
+      { x: 0.31, y: -170, angle: 0.04, spin: 0.002 },
+      { x: 0.69, y: -150, angle: -0.05, spin: -0.002 },
+      { x: 0.5, y: -310, angle: 0.1, spin: 0.005 },
+    ],
+  },
+  {
+    id: "cross-fall",
+    positions: [
+      { x: 0.2, y: -80, angle: 0.14, spin: 0.006 },
+      { x: 0.8, y: -80, angle: -0.14, spin: -0.006 },
+      { x: 0.38, y: -230, angle: -0.08, spin: -0.003 },
+      { x: 0.62, y: -230, angle: 0.08, spin: 0.003 },
+      { x: 0.5, y: -390, angle: 0, spin: 0.004 },
+    ],
+  },
+  {
+    id: "stair-step",
+    positions: [
+      { x: 0.22, y: 20, angle: -0.04, spin: -0.002 },
+      { x: 0.36, y: -85, angle: 0.05, spin: 0.002 },
+      { x: 0.5, y: -190, angle: -0.06, spin: -0.003 },
+      { x: 0.64, y: -295, angle: 0.07, spin: 0.003 },
+      { x: 0.78, y: -400, angle: -0.08, spin: -0.004 },
+    ],
+  },
+  {
+    id: "wide-scatter",
+    positions: [
+      { x: 0.16, y: -180, angle: 0.12, spin: 0.006 },
+      { x: 0.34, y: -30, angle: -0.1, spin: -0.004 },
+      { x: 0.5, y: -300, angle: 0.04, spin: 0.003 },
+      { x: 0.67, y: -70, angle: 0.1, spin: 0.004 },
+      { x: 0.84, y: -210, angle: -0.12, spin: -0.006 },
+    ],
+  },
+] as const;
+
 const STATIC_POSITIONS = [
   { left: "12%", top: "24%", rotate: "-3deg" },
   { left: "48%", top: "18%", rotate: "2deg" },
@@ -50,6 +108,7 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
   const documentVisibleRef = useRef(true);
   const animationFrameRef = useRef<number | null>(null);
   const previousTimeRef = useRef<number | null>(null);
+  const layoutIndexRef = useRef(0);
   const [sceneVersion, setSceneVersion] = useState(0);
   const [physicsReady, setPhysicsReady] = useState(false);
 
@@ -70,7 +129,7 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
     const entityWidth = compact ? 132 : 184;
     const entityHeight = compact ? 56 : 66;
     const wallSize = 80;
-    const desktopSpawnX = [0.36, 0.48, 0.59, 0.42, 0.55] as const;
+    const layout = SCENE_LAYOUTS[layoutIndexRef.current];
     const engine = Matter.Engine.create({
       gravity: { x: 0, y: compact ? 0.62 : 0.78, scale: 0.001 },
       enableSleeping: true,
@@ -80,12 +139,13 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
     toolDefinitions.forEach((tool, index) => {
       const column = index % 2;
       const row = Math.floor(index / 2);
+      const placement = layout.positions[index];
       const x = compact
-        ? width * (column === 0 ? 0.3 : 0.7)
-        : width * desktopSpawnX[index];
-      const y = compact ? 46 + row * 56 : 28 - index * 72;
+        ? width * Math.max(0.24, Math.min(0.76, placement.x))
+        : width * placement.x;
+      const y = compact ? placement.y * 0.58 + row * 18 : placement.y;
       const body = Matter.Bodies.rectangle(x, y, entityWidth, entityHeight, {
-        angle: ((index % 3) - 1) * 0.045,
+        angle: placement.angle,
         chamfer: { radius: 6 },
         density: 0.0014,
         friction: 0.42,
@@ -94,7 +154,7 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
         sleepThreshold: 80,
         label: tool.slug,
       });
-      Matter.Body.setAngularVelocity(body, ((index % 2 === 0 ? 1 : -1) * (index + 1)) / 900);
+      Matter.Body.setAngularVelocity(body, placement.spin);
       bodies.set(tool.slug, body);
     });
 
@@ -122,6 +182,13 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
     buildScene();
     setSceneVersion((version) => version + 1);
   }, [buildScene]);
+
+  const randomizeScene = useCallback(() => {
+    const current = layoutIndexRef.current;
+    const candidate = Math.floor(Math.random() * (SCENE_LAYOUTS.length - 1));
+    layoutIndexRef.current = candidate >= current ? candidate + 1 : candidate;
+    resetScene();
+  }, [resetScene]);
 
   useEffect(() => {
     if (reducedMotion) {
@@ -294,7 +361,7 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
             <h2 id="physics-lab-title">让零散任务，找到自己的位置。</h2>
           </div>
           {!reducedMotion ? (
-            <button type="button" onClick={resetScene} aria-label="重置实验台" title="重置实验台">
+            <button type="button" onClick={randomizeScene} aria-label="重置实验台" title="重置实验台">
               <RotateCcw aria-hidden="true" size={18} strokeWidth={1.7} />
             </button>
           ) : null}
@@ -307,9 +374,10 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
         ref={stageRef}
         className={`zhiye-physics-lab__stage ${physicsReady ? "is-ready" : "is-static"}`}
         aria-label="可拖拽的知页工具"
+        data-layout={SCENE_LAYOUTS[layoutIndexRef.current].id}
       >
         {placement === "hero" && !reducedMotion ? (
-          <button className="zhiye-physics-lab__reset" type="button" onClick={resetScene} aria-label="重置实验台" title="重置实验台">
+          <button className="zhiye-physics-lab__reset" type="button" onClick={randomizeScene} aria-label="重置实验台" title="重置实验台">
             <RotateCcw aria-hidden="true" size={17} strokeWidth={1.7} />
           </button>
         ) : null}

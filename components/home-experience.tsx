@@ -173,6 +173,23 @@ export function HomeExperience() {
           </section>
 
           <section className="zhiye-product-gallery" aria-label="知页视觉展示区">
+            <div className="zhiye-product-gallery__copy">
+              <p>本地处理</p>
+              <h2>内容留在浏览器，<br />处理止于这一页。</h2>
+              <span>知页不建立账号体系，也不把输入内容发送到服务器。打开工具后即可处理，完成后直接带走结果。</span>
+              <ul aria-label="知页本地处理说明">
+                {productPrinciples.map((principle) => (
+                  <li key={principle.label}>
+                    <Check aria-hidden="true" size={14} strokeWidth={2.1} />
+                    <span><strong>{principle.label}</strong>{principle.detail}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/tools" className="zhiye-product-gallery__action">
+                进入工作台
+                <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
+              </Link>
+            </div>
             <motion.div
               className="zhiye-product-hero__visual-shell"
               initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}

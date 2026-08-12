@@ -8330,14 +8330,97 @@ body {
 }
 
 .zhiye-product-gallery {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(42px, 6vw, 84px);
   padding: 76px 0 82px;
   border-top: 1px solid rgba(110, 123, 159, 0.17);
 }
 
 .zhiye-product-gallery .zhiye-product-hero__visual-shell {
   width: 100%;
-  height: 420px;
-  aspect-ratio: auto;
+  height: auto;
+  aspect-ratio: 3 / 2;
+}
+
+.zhiye-product-gallery__copy > p {
+  margin: 0;
+  color: #6879c9;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.zhiye-product-gallery__copy h2 {
+  margin: 15px 0 0;
+  color: #1d2742;
+  font-family: var(--font-serif);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.zhiye-product-gallery__copy > span {
+  display: block;
+  max-width: 410px;
+  margin-top: 17px;
+  color: #6d7890;
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.zhiye-product-gallery__copy ul {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zhiye-product-gallery__copy li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #778198;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.zhiye-product-gallery__copy li > svg {
+  margin-top: 2px;
+  flex: 0 0 auto;
+  color: #6177df;
+}
+
+.zhiye-product-gallery__copy li span {
+  display: flex;
+  gap: 10px;
+}
+
+.zhiye-product-gallery__copy li strong {
+  min-width: 56px;
+  color: #3b4867;
+  font-weight: 600;
+}
+
+.zhiye-product-gallery__action {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  margin-top: 27px;
+  padding: 0 16px;
+  border: 1px solid rgba(78, 99, 198, 0.26);
+  border-radius: 6px;
+  color: #4e63c6;
+  font-size: 13px;
+  transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.zhiye-product-gallery__action:hover {
+  border-color: rgba(78, 99, 198, 0.44);
+  background: #eff3ff;
+  transform: translateY(-1px);
 }
 
 .zhiye-physics-lab {
@@ -8799,7 +8882,21 @@ body {
 
   .zhiye-product-gallery .zhiye-product-hero__visual-shell {
     width: 100%;
-    height: 380px;
+    height: auto;
+  }
+
+  .zhiye-product-gallery {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .zhiye-product-gallery__copy {
+    max-width: 620px;
+  }
+
+  .zhiye-product-gallery .zhiye-product-hero__visual-shell {
+    width: min(100%, 680px);
+    justify-self: end;
   }
 
   .zhiye-product-intro > span {
@@ -8879,6 +8976,19 @@ body {
   .zhiye-product-gallery .zhiye-product-hero__visual-shell {
     height: auto;
     aspect-ratio: 3 / 2;
+  }
+
+  .zhiye-product-gallery {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .zhiye-product-gallery__copy h2 {
+    font-size: 30px;
+  }
+
+  .zhiye-product-gallery__copy > span {
+    max-width: none;
   }
 
   .zhiye-product-carousel__dots {

@@ -13,6 +13,7 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
   await expect(promises.getByText("始终免费", { exact: true })).toBeVisible();
   const carousel = page.getByRole("region", { name: "知页视觉展示", exact: true });
   await expect(carousel).toBeVisible();
+  await expect(page.locator(".zhiye-product-gallery__copy h2")).toContainText("内容留在浏览器");
   await expect(carousel.getByRole("button", { name: "查看第 1 张图片" })).toHaveAttribute("aria-current", "true");
   await carousel.getByRole("button", { name: "查看第 2 张图片" }).click();
   await expect(carousel.getByRole("button", { name: "查看第 2 张图片" })).toHaveAttribute("aria-current", "true");
@@ -154,8 +155,10 @@ test("首页物理实验台支持拖拽、重置和真实工具导航", async ({
   await page.mouse.up();
   expect(new URL(page.url()).pathname).toBe("/");
 
+  const initialLayout = await lab.getAttribute("data-layout");
   await page.getByRole("button", { name: "重置实验台" }).click();
   await expect(lab).toHaveClass(/is-ready/);
+  await expect(lab).not.toHaveAttribute("data-layout", initialLayout!);
   await base64.click();
   await expect(page).toHaveURL(/\/tools\/base64$/);
 });
@@ -165,7 +168,7 @@ test("减少动态效果时物理实验台保持静态可访问", async ({ brows
   const page = await context.newPage();
   await page.goto("/");
   const lab = page.getByLabel("可拖拽的知页工具");
-  await lab.scrollIntoViewIfNeeded();
+  await expect(lab).toBeAttached();
   await expect(lab).toHaveClass(/is-static/);
   await expect(page.getByRole("button", { name: "重置实验台" })).toHaveCount(0);
   await expect(lab.getByRole("link", { name: "打开时间戳转换" })).toBeVisible();
