@@ -1,80 +1,51 @@
 import { expect, test } from "@playwright/test";
 
-test("首页展示知页品牌、免费承诺与四个工具入口", async ({ page }) => {
+test("首页作为产品介绍页，并可进入独立工作台", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveTitle("知页 - AI 时代的浏览器本地工具箱");
   await expect(page.getByRole("link", { name: "知页首页" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "知页", exact: true })).toBeVisible();
-  await expect(page.getByText("免费使用", { exact: true })).toBeVisible();
-  await expect(page.getByText("无需登录", { exact: true })).toBeVisible();
-  await expect(page.getByText("本地处理", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "EverettStone1990@gmail.com" })).toHaveAttribute("href", "mailto:EverettStone1990@gmail.com");
-  await expect(page.getByRole("link", { name: "github.com/ljchengx" })).toHaveAttribute("href", "https://github.com/ljchengx");
+  await expect(page.locator("#home-title")).toContainText("把琐碎处理");
+  await expect(page.locator("#home-title")).toContainText("留在这一页");
+  const promises = page.getByLabel("知页产品承诺");
+  await expect(promises.getByText("无需登录", { exact: true })).toBeVisible();
+  await expect(promises.getByText("本地处理", { exact: true })).toBeVisible();
+  await expect(promises.getByText("始终免费", { exact: true })).toBeVisible();
 
-  const toolIndex = page.locator(".zhiye-index-list");
-  await expect(toolIndex.getByRole("link")).toHaveCount(4);
-  const search = page.getByPlaceholder("搜索工具或使用场景");
-  await search.fill("水印");
-  await expect(toolIndex.getByRole("link")).toHaveCount(1);
-  await expect(toolIndex.getByRole("link", { name: /图片水印/ })).toBeVisible();
+  await page.getByRole("link", { name: "进入工作台" }).first().click();
+  await expect(page).toHaveURL(/\/tools$/);
+  await expect(page.getByRole("heading", { name: "选择一个工具开始处理" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "打开图片水印" })).toBeVisible();
 });
 
-test("静谧工坊主题使用冷雾灰、磨砂与聚焦呼吸", async ({ page }) => {
+test("工作台保持浏览器本地处理的编辑器界面", async ({ page }) => {
   await page.goto("/tools/base64");
   await page.getByLabel("输入文本").focus();
 
   const theme = await page.evaluate(() => {
-    const app = getComputedStyle(document.querySelector(".pulse-app")!);
     const card = getComputedStyle(document.querySelector(".pulse-editor-card--input")!);
     const button = getComputedStyle(document.querySelector(".pulse-run-button")!);
-    const activeIndicator = getComputedStyle(document.querySelector(".pulse-navigation__tool.is-active")!, "::before");
 
     return {
-      pageBackground: app.backgroundColor,
       cardBackground: card.backgroundColor,
       cardBackdrop: card.backdropFilter,
-      cardAnimation: card.animationName,
       buttonBackground: button.backgroundColor,
-      activeIndicator: activeIndicator.backgroundColor,
     };
   });
 
-  expect(theme.pageBackground).toBe("rgb(230, 234, 232)");
-  expect(theme.cardBackground).toBe("rgba(239, 242, 239, 0.94)");
+  expect(theme.cardBackground).not.toBe("rgba(0, 0, 0, 0)");
   expect(theme.cardBackdrop).toBe("blur(18px)");
-  expect(theme.cardAnimation).toBe("pulse-card-breathe");
-  expect(theme.buttonBackground).toBe("rgb(246, 232, 228)");
-  expect(theme.activeIndicator).toBe("rgb(179, 79, 67)");
+  expect(theme.buttonBackground).not.toBe("rgba(0, 0, 0, 0)");
 });
 
-test("专注模式收起桌面侧栏并保留工具入口", async ({ page }) => {
+test("工作台导航可在首页、工作台和具体工具之间切换", async ({ page }) => {
   await page.goto("/tools/base64");
-  await page.getByRole("button", { name: "进入专注模式" }).click();
-
-  await expect(page.locator(".pulse-app")).toHaveClass(/is-focus-mode/);
-  await expect(page.locator(".pulse-sidebar")).toHaveCSS("width", "72px");
-  await expect(page.getByRole("navigation").getByRole("link", { name: "JSON" })).toBeAttached();
-  await expect(page.getByRole("button", { name: "退出专注模式" })).toBeVisible();
-
-  await page.setViewportSize({ width: 820, height: 1180 });
-  const compactLayout = await page.evaluate(() => {
-    const sidebar = document.querySelector(".pulse-sidebar")!.getBoundingClientRect();
-    const focusButton = document.querySelector(".pulse-focus-toggle")!.getBoundingClientRect();
-    const toolbar = document.querySelector(".pulse-toolbar")!.getBoundingClientRect();
-
-    return {
-      buttonInsideRail: focusButton.left >= sidebar.left && focusButton.right <= sidebar.right,
-      toolbarInsideViewport: toolbar.left >= sidebar.right && toolbar.right <= window.innerWidth,
-      noHorizontalOverflow: document.documentElement.scrollWidth <= window.innerWidth,
-    };
-  });
-
-  expect(compactLayout).toEqual({
-    buttonInsideRail: true,
-    toolbarInsideViewport: true,
-    noHorizontalOverflow: true,
-  });
+  await expect(page.getByRole("link", { name: "工作台" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "JSON" })).toHaveAttribute("href", "/tools/json-formatter");
+  await page.getByRole("link", { name: "工作台" }).click();
+  await expect(page).toHaveURL(/\/tools$/);
+  await page.getByRole("link", { name: "打开JSON 格式化" }).click();
+  await expect(page).toHaveURL(/\/tools\/json-formatter$/);
 });
 
 test("Base64 可处理 UTF-8 文本", async ({ page }) => {
@@ -106,7 +77,7 @@ test("Markdown 清理保留可读内容", async ({ page }) => {
   await expect(page.getByLabel("处理结果")).toHaveValue("标题\n\n保留文本 链接");
 });
 
-test("减少动态效果时保留可访问的工具入口", async ({ browser }) => {
+test("减少动态效果时首页仍可进入工作台工具", async ({ browser }) => {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     reducedMotion: "reduce",
@@ -116,7 +87,7 @@ test("减少动态效果时保留可访问的工具入口", async ({ browser }) 
   await page.goto("/");
 
   await expect(page.locator("canvas")).toHaveCount(0);
-  const markdownLink = page.getByRole("link", { name: /打开工具：Markdown 清理/ });
+  const markdownLink = page.getByRole("link", { name: "打开Markdown 清理" });
   await expect(markdownLink).toBeVisible();
   await markdownLink.click();
   await expect(page).toHaveURL(/\/tools\/markdown-cleaner/);

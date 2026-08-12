@@ -869,7 +869,7 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
 
 export function ToolWorkspace({ definition }: { definition: ToolDefinition }) {
   return (
-    <PulseShell activeTool={definition.slug}>
+    <PulseShell activeNavigation="workbench" activeTool={definition.slug}>
       <ToolWorkspaceContent key={definition.slug} definition={definition} />
     </PulseShell>
   );

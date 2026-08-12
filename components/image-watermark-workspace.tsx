@@ -443,7 +443,7 @@ function ImageWatermarkContent({ definition }: { definition: ToolDefinition }) {
 
 export function ImageWatermarkWorkspace({ definition }: { definition: ToolDefinition }) {
   return (
-    <PulseShell activeTool={definition.slug}>
+    <PulseShell activeNavigation="workbench" activeTool={definition.slug}>
       <ImageWatermarkContent definition={definition} />
     </PulseShell>
   );

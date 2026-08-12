@@ -1,7 +1,8 @@
 "use client";
 
-import { Globe2, Home, Menu, Moon, Sparkles, Sun, X } from "lucide-react";
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import Link from "next/link";
+import { Home, LayoutGrid, Menu, X } from "lucide-react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 import { toolDefinitions, type ToolSlug } from "@/lib/tools/registry";
 
@@ -15,230 +16,101 @@ interface PulseLocaleValue {
 }
 
 interface PulseShellProps {
+  activeNavigation?: "workbench";
   activeTool?: ToolSlug;
   children: ReactNode;
   surface?: "home" | "workspace";
 }
-
-const localeStorageKey = "pulse:locale";
-const lightStorageKey = "pulse:light";
-const focusStorageKey = "pulse:focus";
 
 const PulseLocaleContext = createContext<PulseLocaleValue>({
   locale: "zh",
   setLocale: () => undefined,
 });
 
-const shellCopy = {
-  zh: {
-    tools: "本地工具",
-    local: "仅在本地处理",
-    menu: "打开导航",
-    closeMenu: "关闭导航",
-    enterFocus: "进入专注模式",
-    leaveFocus: "退出专注模式",
-    lightToggle: "切换晨光与月光",
-    morning: "晨光",
-    noon: "正午",
-    afternoon: "午后",
-    night: "月光",
-    home: "首页",
-  },
-  en: {
-    tools: "Tools",
-    local: "Local only",
-    menu: "Open navigation",
-    closeMenu: "Close navigation",
-    enterFocus: "Enter focus mode",
-    leaveFocus: "Leave focus mode",
-    lightToggle: "Switch between morning and moonlight",
-    morning: "Morning",
-    noon: "Noon",
-    afternoon: "Afternoon",
-    night: "Moonlight",
-    home: "Home",
-  },
-} as const;
-
-type DayPeriod = "morning" | "noon" | "afternoon" | "night";
-
-function getDayPeriod(): DayPeriod {
-  const hour = new Date().getHours();
-
-  if (hour >= 6 && hour < 10) {
-    return "morning";
-  }
-
-  if (hour >= 10 && hour < 15) {
-    return "noon";
-  }
-
-  if (hour >= 15 && hour < 19) {
-    return "afternoon";
-  }
-
-  return "night";
-}
+const localeValue: PulseLocaleValue = {
+  locale: "zh",
+  setLocale: () => undefined,
+};
 
 export function usePulseLocale(): PulseLocaleValue {
   return useContext(PulseLocaleContext);
 }
 
-export function PulseShell({ activeTool, children, surface = "workspace" }: PulseShellProps) {
-  const [locale, setLocale] = useState<PulseLocale>("zh");
+export function PulseShell({ activeNavigation, activeTool, children, surface = "workspace" }: PulseShellProps) {
   const [navigationOpen, setNavigationOpen] = useState(false);
-  const [dayPeriod, setDayPeriod] = useState<DayPeriod>("morning");
-  const [focusMode, setFocusMode] = useState(false);
-  const copy = shellCopy[locale];
-  const isWorkspace = surface === "workspace";
-
-  useEffect(() => {
-    try {
-      const savedLocale = window.localStorage.getItem(localeStorageKey);
-      if (savedLocale === "zh" || savedLocale === "en") {
-        setLocale(savedLocale);
-      }
-      setFocusMode(window.localStorage.getItem(focusStorageKey) === "true");
-    } catch {
-      // Private browsing can deny storage access; Chinese remains the default.
-    }
-
-    let savedLight: string | null = null;
-    try {
-      savedLight = window.localStorage.getItem(lightStorageKey);
-    } catch {
-      // Automatic time-based light remains available when storage is blocked.
-    }
-    if (savedLight === "morning" || savedLight === "night") {
-      setDayPeriod(savedLight);
-      return;
-    }
-
-    const updateDayPeriod = () => setDayPeriod(getDayPeriod());
-    updateDayPeriod();
-    const interval = window.setInterval(updateDayPeriod, 60_000);
-    return () => window.clearInterval(interval);
-  }, []);
-
-  const toggleLight = () => {
-    setDayPeriod((current) => {
-      const next = current === "night" ? "morning" : "night";
-      try {
-        window.localStorage.setItem(lightStorageKey, next);
-      } catch {
-        // The selected light remains active for the current visit.
-      }
-      return next;
-    });
-  };
-
-  const toggleFocusMode = () => {
-    setFocusMode((current) => {
-      const next = !current;
-      try {
-        window.localStorage.setItem(focusStorageKey, String(next));
-      } catch {
-        // The selected focus state remains active for the current visit.
-      }
-      return next;
-    });
-  };
-
-  const contextValue = useMemo<PulseLocaleValue>(() => ({
-    locale,
-    setLocale: (nextLocale) => {
-      setLocale(nextLocale);
-      try {
-        window.localStorage.setItem(localeStorageKey, nextLocale);
-      } catch {
-        // Locale is still applied for the current visit when storage is unavailable.
-      }
-    },
-  }), [locale]);
+  const hasWorkspaceNavigation = surface === "workspace";
+  const closeNavigation = () => setNavigationOpen(false);
 
   return (
-    <PulseLocaleContext.Provider value={contextValue}>
-      <div className={`pulse-app pulse-surface--${surface} pulse-day--${dayPeriod} ${navigationOpen ? "is-navigation-open" : ""} ${isWorkspace && focusMode ? "is-focus-mode" : ""}`}>
-        <button
-          className="pulse-mobile-menu"
-          type="button"
-          aria-label={navigationOpen ? copy.closeMenu : copy.menu}
-          aria-controls="pulse-navigation"
-          aria-expanded={navigationOpen}
-          onClick={() => setNavigationOpen((open) => !open)}
-        >
-          {navigationOpen ? <X aria-hidden="true" size={20} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={20} strokeWidth={1.7} />}
-        </button>
-
-        <a className="pulse-mobile-brand" href="/" aria-label="知页首页">
-          <span>知页</span>
-        </a>
-
-        <aside className="pulse-sidebar" id="pulse-navigation" aria-label={copy.tools}>
-          <a className="pulse-brand" href="/" onClick={() => setNavigationOpen(false)} aria-label="知页首页">
-            <span>知页</span>
-            <i aria-hidden="true" />
-          </a>
-
-          <nav className="pulse-navigation">
-            <a
-              className={`pulse-navigation__item ${surface === "home" ? "is-active" : ""}`}
-              href="/"
-              onClick={() => setNavigationOpen(false)}
-              aria-current={surface === "home" ? "page" : undefined}
-            >
-              <Home aria-hidden="true" size={24} strokeWidth={1.55} />
-              <span>{copy.home}</span>
-            </a>
-            <div className="pulse-navigation__tools">
-              {toolDefinitions.map((tool) => {
-                const isActive = activeTool === tool.slug;
-                const title = locale === "zh" ? tool.shortTitle : tool.shortTitleEn;
-
-                return (
-                  <a
-                    key={tool.slug}
-                    className={`pulse-navigation__tool ${isActive ? "is-active" : ""}`}
-                    href={`/tools/${tool.slug}`}
-                    onClick={() => setNavigationOpen(false)}
-                    aria-current={isActive ? "page" : undefined}
-                    title={title}
-                  >
-                    <ToolIcon name={tool.icon} size={21} strokeWidth={1.45} />
-                    <span>{title}</span>
-                  </a>
-                );
-              })}
-            </div>
-          </nav>
-
-          <footer className="pulse-sidebar__footer">
-            <button className="pulse-rail-button" type="button" onClick={toggleLight} aria-label={copy.lightToggle} title={copy.lightToggle}>
-              {dayPeriod === "night" ? <Moon aria-hidden="true" size={22} strokeWidth={1.45} /> : <Sun aria-hidden="true" size={22} strokeWidth={1.45} />}
-            </button>
+    <PulseLocaleContext.Provider value={localeValue}>
+      <div className={`pulse-app pulse-surface--${surface} ${navigationOpen ? "is-navigation-open" : ""}`}>
+        {hasWorkspaceNavigation ? (
+          <>
             <button
-              className="pulse-rail-button"
+              className="pulse-mobile-menu"
               type="button"
-              onClick={() => contextValue.setLocale(locale === "zh" ? "en" : "zh")}
-              aria-label={locale === "zh" ? "Switch to English" : "切换至中文"}
-              title={locale === "zh" ? "EN" : "中文"}
+              aria-label={navigationOpen ? "关闭导航" : "打开导航"}
+              aria-controls="pulse-navigation"
+              aria-expanded={navigationOpen}
+              onClick={() => setNavigationOpen((open) => !open)}
             >
-              <Globe2 aria-hidden="true" size={22} strokeWidth={1.45} />
+              {navigationOpen ? <X aria-hidden="true" size={20} strokeWidth={1.7} /> : <Menu aria-hidden="true" size={20} strokeWidth={1.7} />}
             </button>
-            <button
-              className={`pulse-rail-orb ${focusMode ? "is-active" : ""}`}
-              type="button"
-              onClick={toggleFocusMode}
-              aria-label={focusMode ? copy.leaveFocus : copy.enterFocus}
-              aria-pressed={focusMode}
-              title={focusMode ? copy.leaveFocus : copy.enterFocus}
-            >
-              <Sparkles aria-hidden="true" size={18} strokeWidth={1.5} />
-            </button>
-          </footer>
-        </aside>
 
-        <button className="pulse-nav-scrim" type="button" aria-label={copy.closeMenu} onClick={() => setNavigationOpen(false)} />
+            <Link className="pulse-mobile-brand" href="/" aria-label="知页首页">
+              <span>知页</span>
+            </Link>
+
+            <aside className="pulse-sidebar" id="pulse-navigation" aria-label="知页导航">
+              <Link className="pulse-brand" href="/" onClick={closeNavigation} aria-label="知页首页">
+                <span>知页</span>
+                <i aria-hidden="true" />
+              </Link>
+
+              <nav className="pulse-navigation">
+                <Link
+                  className="pulse-navigation__item"
+                  href="/"
+                  onClick={closeNavigation}
+                >
+                  <Home aria-hidden="true" size={21} strokeWidth={1.55} />
+                  <span>首页</span>
+                </Link>
+                <Link
+                  className={`pulse-navigation__item ${activeNavigation === "workbench" ? "is-active" : ""}`}
+                  href="/tools"
+                  onClick={closeNavigation}
+                  aria-current={activeNavigation === "workbench" ? "page" : undefined}
+                >
+                  <LayoutGrid aria-hidden="true" size={21} strokeWidth={1.55} />
+                  <span>工作台</span>
+                </Link>
+
+                <div className="pulse-navigation__tools" aria-label="工具列表">
+                  {toolDefinitions.map((tool) => {
+                    const isActive = activeTool === tool.slug;
+
+                    return (
+                      <Link
+                        key={tool.slug}
+                        className={`pulse-navigation__tool ${isActive ? "is-active" : ""}`}
+                        href={`/tools/${tool.slug}`}
+                        onClick={closeNavigation}
+                        aria-current={isActive ? "page" : undefined}
+                        title={tool.shortTitle}
+                      >
+                        <ToolIcon name={tool.icon} size={21} strokeWidth={1.45} />
+                        <span>{tool.shortTitle}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </nav>
+            </aside>
+
+            <button className="pulse-nav-scrim" type="button" aria-label="关闭导航" onClick={closeNavigation} />
+          </>
+        ) : null}
 
         <main className="pulse-content">{children}</main>
       </div>

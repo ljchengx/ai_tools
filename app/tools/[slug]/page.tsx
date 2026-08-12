@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: tool.metadata.title,
     description: tool.metadata.description,
+    keywords: [...tool.keywords, tool.title, "知页", "浏览器本地工具"],
     alternates: {
       canonical: path,
     },
@@ -34,11 +35,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       siteName: "知页 ZHIYE",
       title: `${tool.metadata.title} | 知页`,
       description: tool.metadata.description,
+      images: ["/opengraph-image"],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: `${tool.metadata.title} | 知页`,
       description: tool.metadata.description,
+      images: ["/opengraph-image"],
     },
   };
 }

@@ -1,5 +1,79 @@
+import type { Metadata } from "next";
+
 import { HomeExperience } from "@/components/home-experience";
+import { toolDefinitions } from "@/lib/tools/registry";
+
+const title = "知页 - 免费的浏览器本地工具箱";
+const description = "免费使用 Base64 编解码、JSON 格式化、Markdown 清理和图片水印工具。无需登录，文本、数据与图片均在浏览器本地处理。";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: title,
+  },
+  description,
+  keywords: ["知页", "免费在线工具", "浏览器本地工具", "Base64 编解码", "JSON 格式化", "Markdown 转纯文本", "图片水印"],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    url: "/",
+    siteName: "知页 ZHIYE",
+    title,
+    description,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "知页浏览器本地工具箱",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/opengraph-image"],
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://www.yzfl.top/#website",
+      url: "https://www.yzfl.top/",
+      name: "知页",
+      alternateName: "ZHIYE",
+      description,
+      inLanguage: "zh-CN",
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://www.yzfl.top/#tools",
+      name: "知页本地工具",
+      numberOfItems: toolDefinitions.length,
+      itemListElement: toolDefinitions.map((tool, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: tool.title,
+        url: `https://www.yzfl.top/tools/${tool.slug}`,
+      })),
+    },
+  ],
+};
 
 export default function HomePage() {
-  return <HomeExperience />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
+      />
+      <HomeExperience />
+    </>
+  );
 }
