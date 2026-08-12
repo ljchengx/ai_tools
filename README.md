@@ -1,6 +1,6 @@
 # 知页 ZHIYE
 
-知页是面向 AI 时代的浏览器本地工具箱，注重视觉品质、使用效率与内容隐私。目前提供 Base64 编解码、JSON 格式化、Markdown 清理和图片水印四项工具。
+知页是面向 AI 时代的浏览器本地工具箱，注重视觉品质、使用效率与内容隐私。目前提供 Base64 编解码、JSON 格式化、Markdown 清理、时间戳转换和图片水印五项工具。
 
 > 聪明处理，止于本页。
 
@@ -13,14 +13,24 @@
 | Base64 编解码 | `/tools/base64` | UTF-8 编解码、URL-safe、结果交换与下载 |
 | JSON 格式化 | `/tools/json-formatter` | 格式化、压缩、校验、键排序、错误定位与结构视图 |
 | Markdown 清理 | `/tools/markdown-cleaner` | 基于 AST 移除 Markdown 标记，保留列表、代码、链接文字与表格结构 |
+| 时间戳转换 | `/tools/timestamp-converter` | Unix 秒/毫秒时间戳与本地或 UTC 日期时间双向转换 |
 | 图片水印 | `/tools/image-watermark` | 本地上传图片，实时调整文本、颜色、透明度与角度，并按原尺寸导出 |
 
-首页 `/` 是知页品牌主页与工具总入口。侧边导航可访问全部工具，并支持中英文界面和专注模式。
+首页 `/` 是独立的产品介绍页，包含可拖拽的工具物理实验台、自动轮播的视觉展台和全部工具入口。工作台 `/tools` 用于集中选择工具，进入具体工具后可通过侧边导航快速切换。
+
+## 键盘操作
+
+- 时间戳转换的单行输入框按 `Enter` 执行转换。
+- Base64、JSON 和 Markdown 的多行编辑器按 `Ctrl + Enter` 执行；macOS 使用 `Command + Enter`。
+- 多行编辑器中的普通 `Enter` 仍用于换行，中文输入法组合输入不会误触发执行。
+- 图片水印采用实时预览，无需手动触发生成。
 
 ## 设计特点
 
 - 冷雾灰画布与低饱和矿物绿强调色
 - 使用 CSS Variables 统一管理颜色、字号、间距、圆角、阴影与动效
+- 首页物理实验台支持拖拽和随机重置，工具实体可直接进入对应页面
+- 视觉展台支持自动轮播与桌面端轻微视差，鼠标悬停或键盘聚焦时暂停
 - 桌面端保持高效分栏，移动端自动切换为纵向工作流
 - 支持 `prefers-reduced-motion`，减少动态效果时仍可完整使用
 - 图片和文本结果均作为本地数据处理，不进行 HTML 注入
@@ -29,7 +39,7 @@
 
 - Next.js 16 App Router
 - React 19 + TypeScript
-- Motion
+- Motion + Matter.js
 - unified、remark-parse、remark-gfm
 - Vitest + Playwright
 
@@ -88,9 +98,10 @@ npx vercel
 
 ```text
 app/                         页面、静态路由与全局设计令牌
-components/                  工作台、导航和工具交互组件
-lib/tools/                   Base64、JSON、Markdown 纯处理逻辑
+components/                  产品主页、物理实验台、工作台、导航和工具交互组件
+lib/tools/                   Base64、JSON、Markdown、时间戳纯处理逻辑
 lib/tools/registry.ts        工具注册表与搜索信息
+public/home-carousel/        首页视觉展台图片
 e2e/                         Playwright 端到端测试
 tests/                       Vitest 单元测试
 ```

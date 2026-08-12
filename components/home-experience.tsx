@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Code2 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
@@ -116,10 +116,22 @@ export function HomeExperience() {
             <a href="#principles">产品原则</a>
             <Link href="/tools">工作台</Link>
           </nav>
-          <Link href="/tools" className="zhiye-product-nav__cta">
-            进入工作台
-            <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
-          </Link>
+          <div className="zhiye-product-nav__actions">
+            <a
+              href="https://github.com/ljchengx/zhiye"
+              className="zhiye-product-nav__github"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="在 GitHub 查看知页源码"
+              title="GitHub"
+            >
+              <Code2 aria-hidden="true" size={20} strokeWidth={1.7} />
+            </a>
+            <Link href="/tools" className="zhiye-product-nav__cta">
+              进入工作台
+              <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
+            </Link>
+          </div>
         </header>
 
         <main>

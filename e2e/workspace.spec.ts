@@ -5,6 +5,7 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
 
   await expect(page).toHaveTitle("知页 - 免费的浏览器本地工具箱");
   await expect(page.getByRole("link", { name: "知页首页" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "在 GitHub 查看知页源码" })).toHaveAttribute("href", "https://github.com/ljchengx/zhiye");
   await expect(page.locator("#home-title")).toContainText("把琐碎处理");
   await expect(page.locator("#home-title")).toContainText("留在这一页");
   const promises = page.getByLabel("知页产品承诺");
