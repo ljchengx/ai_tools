@@ -106,6 +106,13 @@ describe("Markdown 清理", () => {
     expect(stripMarkdown(source)).toBe("1. 第一项\n  - 子项\n  - [x] 已完成\n2. 第二项");
     expect(stripMarkdown("# 标题\n\n第一段\n\n第二段", { compact: true })).toBe("标题\n第一段\n第二段");
   });
+
+  it("会继续清理 text 代码块中的 Markdown，而保留真实代码块", () => {
+    expect(stripMarkdown("```text\n# 文本标题\n\n**正文**\n```"))
+      .toBe("文本标题\n\n正文");
+    expect(stripMarkdown("```ts\n# 这是一行代码\n```"))
+      .toBe("# 这是一行代码");
+  });
 });
 
 describe("时间戳转换", () => {

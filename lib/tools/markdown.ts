@@ -11,6 +11,7 @@ interface MarkdownNode {
   value?: string;
   alt?: string;
   children?: MarkdownNode[];
+  lang?: string | null;
   ordered?: boolean;
   start?: number | null;
   checked?: boolean | null;
@@ -106,6 +107,16 @@ function renderList(node: MarkdownNode, depth: number): string {
     .join("\n");
 }
 
+function isTextMarkdownCodeBlock(node: MarkdownNode): boolean {
+  const language = node.lang?.trim().toLocaleLowerCase("en-US");
+  return language === "text"
+    || language === "txt"
+    || language === "plain"
+    || language === "plaintext"
+    || language === "markdown"
+    || language === "md";
+}
+
 function renderBlock(node: MarkdownNode, depth = 0): string {
   if (inlineNodeTypes.has(node.type)) {
     return renderInline(node);
@@ -118,7 +129,7 @@ function renderBlock(node: MarkdownNode, depth = 0): string {
     case "paragraph":
       return (node.children ?? []).map(renderInline).join("");
     case "code":
-      return node.value ?? "";
+      return isTextMarkdownCodeBlock(node) ? renderMarkdownSource(node.value ?? "") : node.value ?? "";
     case "blockquote":
       return (node.children ?? []).map((child) => renderBlock(child, depth)).filter(Boolean).join("\n");
     case "list":
@@ -143,13 +154,17 @@ function renderBlock(node: MarkdownNode, depth = 0): string {
   }
 }
 
+function renderMarkdownSource(input: string): string {
+  const tree = unified().use(remarkParse).use(remarkGfm).parse(input) as unknown as MarkdownNode;
+  return renderBlock(tree);
+}
+
 export function stripMarkdown(input: string, options: MarkdownStripOptions = {}): string {
   if (!input.trim()) {
     return "";
   }
 
-  const tree = unified().use(remarkParse).use(remarkGfm).parse(input) as unknown as MarkdownNode;
-  const result = renderBlock(tree)
+  const result = renderMarkdownSource(input)
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
