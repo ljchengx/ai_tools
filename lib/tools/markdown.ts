@@ -17,6 +17,10 @@ interface MarkdownNode {
   checked?: boolean | null;
 }
 
+interface MarkdownRenderOptions {
+  compact: boolean;
+}
+
 const inlineNodeTypes = new Set([
   "text",
   "emphasis",
@@ -70,7 +74,14 @@ function renderInline(node: MarkdownNode): string {
   }
 }
 
-function renderListItem(node: MarkdownNode, index: number, ordered: boolean, start: number, depth: number): string {
+function renderListItem(
+  node: MarkdownNode,
+  index: number,
+  ordered: boolean,
+  start: number,
+  depth: number,
+  options: MarkdownRenderOptions,
+): string {
   const indent = "  ".repeat(depth);
   const continuation = `${indent}  `;
   const primary: string[] = [];
@@ -78,9 +89,9 @@ function renderListItem(node: MarkdownNode, index: number, ordered: boolean, sta
 
   for (const child of node.children ?? []) {
     if (child.type === "list") {
-      nested.push(renderList(child, depth + 1));
+      nested.push(renderList(child, depth + 1, options));
     } else {
-      const rendered = renderBlock(child, depth);
+      const rendered = renderBlock(child, depth, options);
       if (rendered) {
         primary.push(rendered);
       }
@@ -97,12 +108,12 @@ function renderListItem(node: MarkdownNode, index: number, ordered: boolean, sta
   return [firstLine, ...continued, ...nested.filter(Boolean)].join("\n");
 }
 
-function renderList(node: MarkdownNode, depth: number): string {
+function renderList(node: MarkdownNode, depth: number, options: MarkdownRenderOptions): string {
   const ordered = Boolean(node.ordered);
   const start = node.start ?? 1;
 
   return (node.children ?? [])
-    .map((item, index) => renderListItem(item, index, ordered, start, depth))
+    .map((item, index) => renderListItem(item, index, ordered, start, depth, options))
     .filter(Boolean)
     .join("\n");
 }
@@ -117,27 +128,50 @@ function isTextMarkdownCodeBlock(node: MarkdownNode): boolean {
     || language === "md";
 }
 
-function renderBlock(node: MarkdownNode, depth = 0): string {
+function blockSeparator(previous: MarkdownNode, current: MarkdownNode, options: MarkdownRenderOptions): string {
+  if (options.compact) {
+    return current.type === "heading" ? "\n\n" : "\n";
+  }
+
+  return previous.type === "heading" ? "\n" : "\n\n";
+}
+
+function renderRoot(node: MarkdownNode, options: MarkdownRenderOptions): string {
+  const blocks = (node.children ?? [])
+    .map((child) => ({ child, content: renderBlock(child, 0, options) }))
+    .filter(({ content }) => Boolean(content));
+
+  return blocks.reduce((result, block, index) => {
+    if (index === 0) {
+      return block.content;
+    }
+
+    const previous = blocks[index - 1];
+    return `${result}${blockSeparator(previous.child, block.child, options)}${block.content}`;
+  }, "");
+}
+
+function renderBlock(node: MarkdownNode, depth = 0, options: MarkdownRenderOptions = { compact: false }): string {
   if (inlineNodeTypes.has(node.type)) {
     return renderInline(node);
   }
 
   switch (node.type) {
     case "root":
-      return (node.children ?? []).map((child) => renderBlock(child)).filter(Boolean).join("\n\n");
+      return renderRoot(node, options);
     case "heading":
     case "paragraph":
       return (node.children ?? []).map(renderInline).join("");
     case "code":
-      return isTextMarkdownCodeBlock(node) ? renderMarkdownSource(node.value ?? "") : node.value ?? "";
+      return isTextMarkdownCodeBlock(node) ? renderMarkdownSource(node.value ?? "", options) : node.value ?? "";
     case "blockquote":
-      return (node.children ?? []).map((child) => renderBlock(child, depth)).filter(Boolean).join("\n");
+      return (node.children ?? []).map((child) => renderBlock(child, depth, options)).filter(Boolean).join("\n");
     case "list":
-      return renderList(node, depth);
+      return renderList(node, depth, options);
     case "listItem":
-      return renderListItem(node, 0, false, 1, depth);
+      return renderListItem(node, 0, false, 1, depth, options);
     case "table":
-      return (node.children ?? []).map((child) => renderBlock(child, depth)).filter(Boolean).join("\n");
+      return (node.children ?? []).map((child) => renderBlock(child, depth, options)).filter(Boolean).join("\n");
     case "tableRow":
       return (node.children ?? []).map(renderInline).join("\t");
     case "tableCell":
@@ -150,13 +184,13 @@ function renderBlock(node: MarkdownNode, depth = 0): string {
     case "yaml":
       return "";
     default:
-      return (node.children ?? []).map((child) => renderBlock(child, depth)).filter(Boolean).join("\n");
+      return (node.children ?? []).map((child) => renderBlock(child, depth, options)).filter(Boolean).join("\n");
   }
 }
 
-function renderMarkdownSource(input: string): string {
+function renderMarkdownSource(input: string, options: MarkdownRenderOptions): string {
   const tree = unified().use(remarkParse).use(remarkGfm).parse(input) as unknown as MarkdownNode;
-  return renderBlock(tree);
+  return renderBlock(tree, 0, options);
 }
 
 export function stripMarkdown(input: string, options: MarkdownStripOptions = {}): string {
@@ -164,10 +198,10 @@ export function stripMarkdown(input: string, options: MarkdownStripOptions = {})
     return "";
   }
 
-  const result = renderMarkdownSource(input)
+  const result = renderMarkdownSource(input, { compact: Boolean(options.compact) })
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
-  return options.compact ? result.replace(/\n{2,}/g, "\n") : result;
+  return result;
 }

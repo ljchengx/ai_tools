@@ -94,7 +94,7 @@ test("Markdown 清理保留可读内容", async ({ page }) => {
   await page.getByLabel("输入文本").fill("# 标题\n\n**保留文本** [链接](https://example.com)");
   await page.getByLabel("输入文本").press("Control+Enter");
 
-  await expect(page.getByLabel("处理结果")).toHaveValue("标题\n\n保留文本 链接");
+  await expect(page.getByLabel("处理结果")).toHaveValue("标题\n保留文本 链接");
 });
 
 test("减少动态效果时首页仍可进入工作台工具", async ({ browser }) => {
