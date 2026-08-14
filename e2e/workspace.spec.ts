@@ -97,6 +97,30 @@ test("Markdown 清理保留可读内容", async ({ page }) => {
   await expect(page.getByLabel("处理结果")).toHaveValue("标题\n保留文本 链接");
 });
 
+test("Markdown 清理会处理 text 围栏中的标题、粗体和分隔线", async ({ page }) => {
+  await page.goto("/tools/markdown-cleaner");
+
+  const fence = "```";
+  const input = [
+    "---",
+    "",
+    `${fence}text`,
+    "# 输入结构",
+    "",
+    "1. **学生作答图片**（必需）",
+    "",
+    "---",
+    "",
+    "# 判定优先级",
+    `${fence}`,
+  ].join("\n");
+
+  await page.getByLabel("输入文本").fill(input);
+  await page.getByLabel("输入文本").press("Control+Enter");
+
+  await expect(page.getByLabel("处理结果")).toHaveValue("输入结构\n1. 学生作答图片（必需）\n\n判定优先级");
+});
+
 test("减少动态效果时首页仍可进入工作台工具", async ({ browser }) => {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
