@@ -26,17 +26,17 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
 });
 
 test("工具页包含可索引说明、FAQ 和结构化数据", async ({ page }) => {
-  await page.goto("/tools/json-formatter");
+  await page.goto("/json");
 
   await expect(page.getByRole("heading", { name: "JSON 在线格式化、美化与校验" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "常见问题" })).toBeVisible();
   await expect(page.getByText("JSON 格式化和 JSON 压缩有什么区别？", { exact: true })).toBeVisible();
   const structuredData = await page.locator('script[type="application/ld+json"]').evaluate((script) => script.textContent ?? "");
-  expect(structuredData).toContain("FAQPage");
+  expect(structuredData).toContain("WebApplication");
 });
 
 test("工作台保持浏览器本地处理的编辑器界面", async ({ page }) => {
-  await page.goto("/tools/base64");
+  await page.goto("/base64");
   await page.getByLabel("输入文本").focus();
 
   const theme = await page.evaluate(() => {
@@ -56,19 +56,19 @@ test("工作台保持浏览器本地处理的编辑器界面", async ({ page }) 
 });
 
 test("工作台导航可在首页、工作台和具体工具之间切换", async ({ page }) => {
-  await page.goto("/tools/base64");
+  await page.goto("/base64");
   await expect(page.getByRole("link", { name: "工作台" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "JSON", exact: true })).toHaveAttribute("href", "/tools/json-formatter");
+  await expect(page.getByRole("link", { name: "JSON", exact: true })).toHaveAttribute("href", "/json");
   await page.getByRole("link", { name: "工作台" }).click();
   await expect(page).toHaveURL(/\/tools$/);
   await page.getByRole("link", { name: "打开JSON 格式化" }).click();
-  await expect(page).toHaveURL(/\/tools\/json-formatter$/);
+  await expect(page).toHaveURL(/\/json$/);
 });
 
 test("Base64 可处理 UTF-8 文本", async ({ page }) => {
-  await page.goto("/tools/base64");
+  await page.goto("/base64");
 
-  await expect(page).toHaveTitle("Base64 在线编码解码工具 - UTF-8、URL Safe | 知页");
+  await expect(page).toHaveTitle("Base64 编码解码工具 - 免费在线 Base64 编解码 | 知页");
   await page.getByLabel("输入文本").fill("你好🙂");
   await page.getByLabel("输入文本").press("Control+Enter");
 
@@ -77,7 +77,7 @@ test("Base64 可处理 UTF-8 文本", async ({ page }) => {
 });
 
 test("JSON 在出错时显示行列位置", async ({ page }) => {
-  await page.goto("/tools/json-formatter");
+  await page.goto("/json");
 
   await page.getByLabel("输入文本").fill('{\n  "name": "MORPH",\n}');
   await page.getByLabel("输入文本").press("Control+Enter");
@@ -86,7 +86,7 @@ test("JSON 在出错时显示行列位置", async ({ page }) => {
 });
 
 test("JSON 普通回车换行，组合键执行格式化", async ({ page }) => {
-  await page.goto("/tools/json-formatter");
+  await page.goto("/json");
 
   const input = page.getByLabel("输入文本");
   await input.fill('{"name":"知页"}');
@@ -99,7 +99,7 @@ test("JSON 普通回车换行，组合键执行格式化", async ({ page }) => {
 });
 
 test("Markdown 清理保留可读内容", async ({ page }) => {
-  await page.goto("/tools/markdown-cleaner");
+  await page.goto("/markdown");
 
   await page.getByLabel("输入文本").fill("# 标题\n\n**保留文本** [链接](https://example.com)");
   await page.getByLabel("输入文本").press("Control+Enter");
@@ -108,7 +108,7 @@ test("Markdown 清理保留可读内容", async ({ page }) => {
 });
 
 test("Markdown 清理会处理 text 围栏中的标题、粗体和分隔线", async ({ page }) => {
-  await page.goto("/tools/markdown-cleaner");
+  await page.goto("/markdown");
 
   const fence = "```";
   const input = [
@@ -144,7 +144,7 @@ test("减少动态效果时首页仍可进入工作台工具", async ({ browser 
   const markdownLink = page.locator(".zhiye-product-tools").getByRole("link", { name: "打开Markdown 清理" });
   await expect(markdownLink).toBeVisible();
   await markdownLink.click();
-  await expect(page).toHaveURL(/\/tools\/markdown-cleaner/);
+  await expect(page).toHaveURL(/\/markdown/);
   await context.close();
 });
 
@@ -208,7 +208,7 @@ test("首页物理实验台支持拖拽、重置和真实工具导航", async ({
   await expect(lab).toHaveClass(/is-ready/);
   await expect(lab).not.toHaveAttribute("data-layout", initialLayout!);
   await base64.click();
-  await expect(page).toHaveURL(/\/tools\/base64$/);
+  await expect(page).toHaveURL(/\/base64$/);
 });
 
 test("减少动态效果时物理实验台保持静态可访问", async ({ browser }) => {
@@ -224,7 +224,7 @@ test("减少动态效果时物理实验台保持静态可访问", async ({ brows
 });
 
 test("Base64 支持 URL-safe 输出与结果交换", async ({ page }) => {
-  await page.goto("/tools/base64");
+  await page.goto("/base64");
 
   await page.getByRole("button", { name: "URL-safe" }).click();
   await page.getByLabel("输入文本").fill("你好🙂");
@@ -238,7 +238,7 @@ test("Base64 支持 URL-safe 输出与结果交换", async ({ page }) => {
 });
 
 test("JSON 支持键排序与结构视图", async ({ page }) => {
-  await page.goto("/tools/json-formatter");
+  await page.goto("/json");
 
   await page.getByLabel("输入文本").fill('{"z":1,"a":{"d":2,"b":3}}');
   await page.getByRole("button", { name: "4 空格" }).click();
@@ -251,7 +251,7 @@ test("JSON 支持键排序与结构视图", async ({ page }) => {
 });
 
 test("Markdown 清理可保留列表并合并空行", async ({ page }) => {
-  await page.goto("/tools/markdown-cleaner");
+  await page.goto("/markdown");
 
   await page.getByLabel("合并空行").check();
   await page.getByLabel("输入文本").fill("1. 第一项\n   - 子项\n\n2. 第二项");
@@ -260,7 +260,7 @@ test("Markdown 清理可保留列表并合并空行", async ({ page }) => {
 });
 
 test("图片水印支持四项自定义并下载原尺寸结果", async ({ page }) => {
-  await page.goto("/tools/image-watermark");
+  await page.goto("/image-watermark");
   await expect(page.getByLabel("颜色", { exact: true })).toHaveValue("#8a9299");
   await expect(page.getByRole("slider", { name: "透明度" })).toHaveValue("22");
   const png = Buffer.from(await page.evaluate(() => {
@@ -300,9 +300,9 @@ test("图片水印支持四项自定义并下载原尺寸结果", async ({ page 
 });
 
 test("时间戳工具支持双向转换和真实交互", async ({ page }) => {
-  await page.goto("/tools/timestamp-converter");
+  await page.goto("/timestamp");
 
-  await expect(page).toHaveTitle("Unix 时间戳在线转换工具 - 秒、毫秒与日期互转 | 知页");
+  await expect(page).toHaveTitle("时间戳转换工具 - Unix 时间戳在线转换 | 知页");
   await expect(page.getByRole("link", { name: "时间戳" })).toHaveAttribute("aria-current", "page");
   await page.getByLabel("输入 Unix 时间戳").fill("0");
   await page.getByLabel("输入 Unix 时间戳").press("Enter");

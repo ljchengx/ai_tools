@@ -6,7 +6,7 @@ export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const toolPages: MetadataRoute.Sitemap = toolDefinitions.map((tool) => ({
-    url: `https://www.yzfl.top/tools/${tool.slug}`,
+    url: `https://www.yzfl.top/${tool.path}`,
     changeFrequency: "monthly",
     priority: 0.8,
   }));

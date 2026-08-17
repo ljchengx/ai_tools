@@ -5,7 +5,7 @@ import { toolDefinitions, type ToolDefinition } from "@/lib/tools/registry";
 const siteUrl = "https://www.yzfl.top";
 
 export function ToolSeoContent({ definition }: { definition: ToolDefinition }) {
-  const pageUrl = `${siteUrl}/tools/${definition.slug}`;
+  const pageUrl = `${siteUrl}/${definition.path}`;
   const relatedTools = toolDefinitions.filter((tool) => tool.slug !== definition.slug);
   const structuredData = {
     "@context": "https://schema.org",
@@ -13,7 +13,7 @@ export function ToolSeoContent({ definition }: { definition: ToolDefinition }) {
       {
         "@type": "WebApplication",
         "@id": `${pageUrl}#application`,
-        name: definition.title,
+        name: definition.seo.h1,
         url: pageUrl,
         description: definition.metadata.description,
         applicationCategory: "DeveloperApplication",
@@ -29,18 +29,6 @@ export function ToolSeoContent({ definition }: { definition: ToolDefinition }) {
           name: "知页",
           url: siteUrl,
         },
-      },
-      {
-        "@type": "FAQPage",
-        "@id": `${pageUrl}#faq`,
-        mainEntity: definition.seo.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer,
-          },
-        })),
       },
     ],
   };
@@ -69,6 +57,15 @@ export function ToolSeoContent({ definition }: { definition: ToolDefinition }) {
           </section>
         </div>
 
+        <div className="tool-seo-content__article">
+          {definition.seo.sections.map((section, index) => (
+            <section key={section.heading} aria-labelledby={`tool-section-${index}`}>
+              <h3 id={`tool-section-${index}`}>{section.heading}</h3>
+              {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </section>
+          ))}
+        </div>
+
         <section className="tool-seo-content__faq" aria-labelledby="tool-faq-title">
           <h3 id="tool-faq-title">常见问题</h3>
           <div>
@@ -86,7 +83,7 @@ export function ToolSeoContent({ definition }: { definition: ToolDefinition }) {
           <ul>
             {relatedTools.map((tool) => (
               <li key={tool.slug}>
-                <Link href={`/tools/${tool.slug}`}>
+                <Link href={`/${tool.path}`}>
                   <span>{tool.title}</span>
                   <small>{tool.seo.summary}</small>
                 </Link>

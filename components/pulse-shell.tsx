@@ -94,7 +94,7 @@ export function PulseShell({ activeNavigation, activeTool, children, surface = "
                       <Link
                         key={tool.slug}
                         className={`pulse-navigation__tool ${isActive ? "is-active" : ""}`}
-                        href={`/tools/${tool.slug}`}
+                        href={`/${tool.path}`}
                         onClick={closeNavigation}
                         aria-current={isActive ? "page" : undefined}
                         title={tool.shortTitle}

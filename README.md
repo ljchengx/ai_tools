@@ -10,11 +10,11 @@
 
 | 工具 | 路由 | 能力 |
 | --- | --- | --- |
-| Base64 编解码 | `/tools/base64` | UTF-8 编解码、URL-safe、结果交换与下载 |
-| JSON 格式化 | `/tools/json-formatter` | 格式化、压缩、校验、键排序、错误定位与结构视图 |
-| Markdown 清理 | `/tools/markdown-cleaner` | 基于 AST 移除 Markdown 标记，保留列表、代码、链接文字与表格结构 |
-| 时间戳转换 | `/tools/timestamp-converter` | Unix 秒/毫秒时间戳与本地或 UTC 日期时间双向转换 |
-| 图片水印 | `/tools/image-watermark` | 本地上传图片，实时调整文本、颜色、透明度与角度，并按原尺寸导出 |
+| Base64 编解码 | `/base64` | UTF-8 编解码、URL-safe、结果交换与下载 |
+| JSON 格式化 | `/json` | 格式化、压缩、校验、键排序、错误定位与结构视图 |
+| Markdown 清理 | `/markdown` | 基于 AST 移除 Markdown 标记，保留列表、代码、链接文字与表格结构 |
+| 时间戳转换 | `/timestamp` | Unix 秒/毫秒时间戳与本地或 UTC 日期时间双向转换 |
+| 图片水印 | `/image-watermark` | 本地上传图片，实时调整文本、颜色、透明度与角度，并按原尺寸导出 |
 
 首页 `/` 是独立的产品介绍页，包含可拖拽的工具物理实验台、自动轮播的视觉展台和全部工具入口。工作台 `/tools` 用于集中选择工具，进入具体工具后可通过侧边导航快速切换。
 

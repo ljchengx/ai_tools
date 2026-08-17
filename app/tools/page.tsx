@@ -45,7 +45,7 @@ export default function ToolsPage() {
         <div className="zhiye-workbench-index__grid">
           {toolDefinitions.map((tool, index) => (
             <article key={tool.slug} className={`zhiye-workbench-index__card zhiye-workbench-index__card--${tool.accent}`}>
-              <Link href={`/tools/${tool.slug}`} aria-label={`打开${tool.title}`}>
+              <Link href={`/${tool.path}`} aria-label={`打开${tool.title}`}>
                 <span className="zhiye-workbench-index__number">0{index + 1}</span>
                 <span className="zhiye-workbench-index__icon"><ToolIcon name={tool.icon} size={25} strokeWidth={1.45} /></span>
                 <h2>{tool.title}</h2>

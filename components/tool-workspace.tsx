@@ -632,7 +632,7 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
     }
   };
 
-  const title = locale === "zh" ? definition.title : definition.titleEn;
+  const title = locale === "zh" ? definition.seo.h1 : definition.titleEn;
   const description = locale === "zh" ? definition.description : definition.descriptionEn;
   const action = actionLabel(definition, mode, locale);
   const actionAriaLabel = locale === "zh" ? `执行${action}` : `Run ${action}`;

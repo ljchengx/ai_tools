@@ -187,7 +187,7 @@ function TimestampWorkspaceContent({ definition }: { definition: ToolDefinition 
           <div className="pulse-workbench__meta" aria-hidden="true">
             <span>知页 / 工具</span><i /><span>{definition.category}</span>
           </div>
-          <h1 id="tool-title">{definition.title}</h1>
+          <h1 id="tool-title">{definition.seo.h1}</h1>
           <p>{definition.description}</p>
         </div>
       </header>

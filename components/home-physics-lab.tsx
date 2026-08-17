@@ -400,7 +400,7 @@ export function HomePhysicsLab({ placement = "section" }: { placement?: "hero" |
                   entityRefs.current.delete(tool.slug);
                 }
               }}
-              href={`/tools/${tool.slug}`}
+              href={`/${tool.path}`}
               className={`zhiye-physics-entity zhiye-physics-entity--${tool.accent}`}
               style={style}
               draggable={false}

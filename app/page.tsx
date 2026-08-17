@@ -4,7 +4,7 @@ import { HomeExperience } from "@/components/home-experience";
 import { toolDefinitions } from "@/lib/tools/registry";
 
 const title = "知页 - 免费的浏览器本地工具箱";
-const description = "免费使用 Base64 编解码、JSON 格式化、Markdown 清理、时间戳转换和图片水印工具。无需登录，文本、数据与图片均在浏览器本地处理。";
+const description = "知页提供免费的浏览器本地工具，包括 Base64 编解码、JSON 格式化、Markdown 清理、时间戳转换和图片水印。无需注册，数据直接在浏览器中处理。";
 
 export const metadata: Metadata = {
   title: {
@@ -60,7 +60,7 @@ const structuredData = {
         "@type": "ListItem",
         position: index + 1,
         name: tool.title,
-        url: `https://www.yzfl.top/tools/${tool.slug}`,
+        url: `https://www.yzfl.top/${tool.path}`,
       })),
     },
   ],

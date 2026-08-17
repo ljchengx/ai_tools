@@ -292,7 +292,7 @@ function ImageWatermarkContent({ definition }: { definition: ToolDefinition }) {
     setStatus({ tone: "success", text: copy.downloaded });
   };
 
-  const title = locale === "zh" ? definition.title : definition.titleEn;
+  const title = locale === "zh" ? definition.seo.h1 : definition.titleEn;
   const description = locale === "zh" ? definition.description : definition.descriptionEn;
 
   return (

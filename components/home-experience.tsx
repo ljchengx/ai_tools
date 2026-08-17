@@ -287,7 +287,7 @@ export function HomeExperience() {
             <div className="zhiye-product-tool-grid">
               {toolDefinitions.map((tool, index) => (
                 <article key={tool.slug} className={`zhiye-product-tool-card zhiye-product-tool-card--${tool.accent}`}>
-                  <Link href={`/tools/${tool.slug}`} aria-label={`打开${tool.title}`}>
+                  <Link href={`/${tool.path}`} aria-label={`打开${tool.title}`}>
                     <span className="zhiye-product-tool-card__number">0{index + 1}</span>
                     <span className="zhiye-product-tool-card__icon"><ToolIcon name={tool.icon} size={24} strokeWidth={1.45} /></span>
                     <h3>{tool.title}</h3>
@@ -314,7 +314,7 @@ export function HomeExperience() {
             <ul aria-label="知页工具说明">
               {toolDefinitions.map((tool) => (
                 <li key={tool.slug}>
-                  <Link href={`/tools/${tool.slug}`}>
+                  <Link href={`/${tool.path}`}>
                     <span className="zhiye-product-seo__tool-title">{tool.title}</span>
                     <span>{tool.seo.summary}</span>
                     <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
