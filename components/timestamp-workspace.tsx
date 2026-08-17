@@ -2,7 +2,7 @@
 
 import { Check, Clock3, Copy, RotateCcw, ShieldCheck, Trash2, TriangleAlert } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { recordRecentTool } from "@/lib/recent-tools";
 import type { ToolDefinition } from "@/lib/tools/registry";
@@ -275,6 +275,6 @@ function TimestampWorkspaceContent({ definition }: { definition: ToolDefinition 
   );
 }
 
-export function TimestampWorkspace({ definition }: { definition: ToolDefinition }) {
-  return <PulseShell activeNavigation="workbench" activeTool={definition.slug}><TimestampWorkspaceContent definition={definition} /></PulseShell>;
+export function TimestampWorkspace({ definition, seoContent }: { definition: ToolDefinition; seoContent?: ReactNode }) {
+  return <PulseShell activeNavigation="workbench" activeTool={definition.slug}><TimestampWorkspaceContent definition={definition} />{seoContent}</PulseShell>;
 }

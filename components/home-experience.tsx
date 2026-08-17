@@ -237,7 +237,7 @@ export function HomeExperience() {
                 <div className="zhiye-product-carousel__track" style={{ transform: `translate3d(-${activeSlide * 100}%, 0, 0)` }}>
                   {homeSlides.map((slide, index) => (
                     <div className="zhiye-product-carousel__slide" key={slide.src} aria-hidden={index !== activeSlide}>
-                      <img src={slide.src} alt={index === activeSlide ? slide.alt : ""} loading={index < 2 ? "eager" : "lazy"} />
+                      <img src={slide.src} alt="" loading={index < 2 ? "eager" : "lazy"} />
                     </div>
                   ))}
                 </div>
@@ -300,6 +300,28 @@ export function HomeExperience() {
                 </article>
               ))}
             </div>
+          </section>
+
+          <section className="zhiye-product-seo" aria-labelledby="home-seo-title">
+            <div className="zhiye-product-seo__intro">
+              <p>浏览器本地工具</p>
+              <h2 id="home-seo-title">免费在线工具，处理留在浏览器。</h2>
+              <span>
+                知页提供 Base64 编解码、JSON 格式化、Markdown 清理、时间戳转换和图片水印等常用工具。
+                无需注册或上传，支持在浏览器本地处理文本、数据与图片。
+              </span>
+            </div>
+            <ul aria-label="知页工具说明">
+              {toolDefinitions.map((tool) => (
+                <li key={tool.slug}>
+                  <Link href={`/tools/${tool.slug}`}>
+                    <span className="zhiye-product-seo__tool-title">{tool.title}</span>
+                    <span>{tool.seo.summary}</span>
+                    <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </section>
 
           <section className="zhiye-product-cta" aria-labelledby="cta-title">

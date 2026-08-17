@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ImageWatermarkWorkspace } from "@/components/image-watermark-workspace";
 import { TimestampWorkspace } from "@/components/timestamp-workspace";
+import { ToolSeoContent } from "@/components/tool-seo-content";
 import { ToolWorkspace } from "@/components/tool-workspace";
 import { getToolBySlug, toolDefinitions } from "@/lib/tools/registry";
 
@@ -56,12 +57,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   }
 
   if (tool.slug === "image-watermark") {
-    return <ImageWatermarkWorkspace definition={tool} />;
+    return <ImageWatermarkWorkspace definition={tool} seoContent={<ToolSeoContent definition={tool} />} />;
   }
 
   if (tool.slug === "timestamp-converter") {
-    return <TimestampWorkspace definition={tool} />;
+    return <TimestampWorkspace definition={tool} seoContent={<ToolSeoContent definition={tool} />} />;
   }
 
-  return <ToolWorkspace definition={tool} />;
+  return <ToolWorkspace definition={tool} seoContent={<ToolSeoContent definition={tool} />} />;
 }

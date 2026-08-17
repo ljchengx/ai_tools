@@ -6,8 +6,8 @@ import { PulseShell } from "@/components/pulse-shell";
 import { ToolIcon } from "@/components/tool-icon";
 import { toolDefinitions } from "@/lib/tools/registry";
 
-const title = "浏览器本地工具工作台";
-const description = "选择 Base64 编解码、JSON 格式化、Markdown 清理或图片水印工具，所有操作均在浏览器本地完成。";
+const title = "免费在线工具工作台 - Base64、JSON、Markdown 与时间戳";
+const description = "选择 Base64 编解码、JSON 格式化、Markdown 清理、Unix 时间戳转换或图片水印工具，所有操作均在浏览器本地完成。";
 
 export const metadata: Metadata = {
   title,
@@ -38,8 +38,8 @@ export default function ToolsPage() {
       <section className="zhiye-workbench-index" aria-labelledby="workbench-title">
         <header className="zhiye-workbench-index__header">
           <p>知页 / 工作台</p>
-          <h1 id="workbench-title">选择一个工具开始处理</h1>
-          <span>所有操作均在浏览器本地完成，内容不会上传。</span>
+          <h1 id="workbench-title">免费在线工具工作台</h1>
+          <span>Base64、JSON、Markdown、Unix 时间戳和图片水印工具，均可在浏览器本地使用，内容不会上传。</span>
         </header>
 
         <div className="zhiye-workbench-index__grid">
@@ -49,7 +49,7 @@ export default function ToolsPage() {
                 <span className="zhiye-workbench-index__number">0{index + 1}</span>
                 <span className="zhiye-workbench-index__icon"><ToolIcon name={tool.icon} size={25} strokeWidth={1.45} /></span>
                 <h2>{tool.title}</h2>
-                <p>{tool.description}</p>
+                <p>{tool.seo.summary}</p>
                 <span className="zhiye-workbench-index__action">
                   打开工具
                   <ArrowRight aria-hidden="true" size={16} strokeWidth={1.8} />

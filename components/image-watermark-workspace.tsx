@@ -2,7 +2,7 @@
 
 import { ArrowRight, Check, Download, FileImage, ImagePlus, RotateCcw, ShieldCheck, Trash2, TriangleAlert } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type DragEvent, type ReactNode } from "react";
 
 import { recordRecentTool } from "@/lib/recent-tools";
 import type { ToolDefinition } from "@/lib/tools/registry";
@@ -441,10 +441,11 @@ function ImageWatermarkContent({ definition }: { definition: ToolDefinition }) {
   );
 }
 
-export function ImageWatermarkWorkspace({ definition }: { definition: ToolDefinition }) {
+export function ImageWatermarkWorkspace({ definition, seoContent }: { definition: ToolDefinition; seoContent?: ReactNode }) {
   return (
     <PulseShell activeNavigation="workbench" activeTool={definition.slug}>
       <ImageWatermarkContent definition={definition} />
+      {seoContent}
     </PulseShell>
   );
 }

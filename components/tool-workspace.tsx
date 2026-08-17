@@ -15,7 +15,7 @@ import {
   UnlockKeyhole,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type DragEvent, type ReactNode } from "react";
 
 import { recordRecentTool } from "@/lib/recent-tools";
 import { decodeBase64, encodeBase64, TextTransformError, type Base64Variant } from "@/lib/tools/base64";
@@ -877,10 +877,11 @@ function ToolWorkspaceContent({ definition }: { definition: ToolDefinition }) {
   );
 }
 
-export function ToolWorkspace({ definition }: { definition: ToolDefinition }) {
+export function ToolWorkspace({ definition, seoContent }: { definition: ToolDefinition; seoContent?: ReactNode }) {
   return (
     <PulseShell activeNavigation="workbench" activeTool={definition.slug}>
       <ToolWorkspaceContent key={definition.slug} definition={definition} />
+      {seoContent}
     </PulseShell>
   );
 }

@@ -21,8 +21,18 @@ test("首页作为产品介绍页，并可进入独立工作台", async ({ page 
 
   await page.getByRole("link", { name: "进入工作台" }).first().click();
   await expect(page).toHaveURL(/\/tools$/);
-  await expect(page.getByRole("heading", { name: "选择一个工具开始处理" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "免费在线工具工作台" })).toBeVisible();
   await expect(page.getByRole("link", { name: "打开图片水印" })).toBeVisible();
+});
+
+test("工具页包含可索引说明、FAQ 和结构化数据", async ({ page }) => {
+  await page.goto("/tools/json-formatter");
+
+  await expect(page.getByRole("heading", { name: "JSON 在线格式化、美化与校验" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "常见问题" })).toBeVisible();
+  await expect(page.getByText("JSON 格式化和 JSON 压缩有什么区别？", { exact: true })).toBeVisible();
+  const structuredData = await page.locator('script[type="application/ld+json"]').evaluate((script) => script.textContent ?? "");
+  expect(structuredData).toContain("FAQPage");
 });
 
 test("工作台保持浏览器本地处理的编辑器界面", async ({ page }) => {
@@ -48,7 +58,7 @@ test("工作台保持浏览器本地处理的编辑器界面", async ({ page }) 
 test("工作台导航可在首页、工作台和具体工具之间切换", async ({ page }) => {
   await page.goto("/tools/base64");
   await expect(page.getByRole("link", { name: "工作台" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "JSON" })).toHaveAttribute("href", "/tools/json-formatter");
+  await expect(page.getByRole("link", { name: "JSON", exact: true })).toHaveAttribute("href", "/tools/json-formatter");
   await page.getByRole("link", { name: "工作台" }).click();
   await expect(page).toHaveURL(/\/tools$/);
   await page.getByRole("link", { name: "打开JSON 格式化" }).click();
@@ -58,7 +68,7 @@ test("工作台导航可在首页、工作台和具体工具之间切换", async
 test("Base64 可处理 UTF-8 文本", async ({ page }) => {
   await page.goto("/tools/base64");
 
-  await expect(page).toHaveTitle("Base64 编码解码 - UTF-8 与 URL Safe 在线工具 | 知页");
+  await expect(page).toHaveTitle("Base64 在线编码解码工具 - UTF-8、URL Safe | 知页");
   await page.getByLabel("输入文本").fill("你好🙂");
   await page.getByLabel("输入文本").press("Control+Enter");
 
@@ -292,7 +302,7 @@ test("图片水印支持四项自定义并下载原尺寸结果", async ({ page 
 test("时间戳工具支持双向转换和真实交互", async ({ page }) => {
   await page.goto("/tools/timestamp-converter");
 
-  await expect(page).toHaveTitle("Unix 时间戳转换 - 秒、毫秒与日期时间互转 | 知页");
+  await expect(page).toHaveTitle("Unix 时间戳在线转换工具 - 秒、毫秒与日期互转 | 知页");
   await expect(page.getByRole("link", { name: "时间戳" })).toHaveAttribute("aria-current", "page");
   await page.getByLabel("输入 Unix 时间戳").fill("0");
   await page.getByLabel("输入 Unix 时间戳").press("Enter");
