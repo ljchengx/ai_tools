@@ -3,6 +3,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.yzfl.top"),
+  verification: {
+    other: {
+      "baidu-site-verification": "codeva-RGuMI7PTBY",
+    },
+  },
   applicationName: "知页",
   title: {
     default: "知页 - 免费的浏览器本地工具箱",
