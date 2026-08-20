@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.yzfl.top"),
   verification: {
     other: {
-      "baidu-site-verification": "codeva-RGuMI7PTBY",
+      "baidu-site-verification": "codeva-bKYy1pUpPr",
     },
   },
   applicationName: "知页",

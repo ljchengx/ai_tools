@@ -136,12 +136,12 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     descriptionEn: "Bring order back to complex data structures.",
     category: "结构处理",
     categoryEn: "Data structure",
-    keywords: ["JSON格式化", "JSON在线格式化", "JSON美化", "JSON格式化工具", "JSON在线工具", "JSON压缩", "JSON校验", "JSON解析", "JSON Viewer"],
+    keywords: ["JSON格式化", "JSON在线格式化", "JSON美化", "JSON格式化工具", "在线格式化工具", "JSON在线工具", "JSON压缩", "JSON校验", "JSON解析", "JSON Viewer"],
     icon: "braces",
     accent: "sage",
     metadata: {
       title: "JSON 格式化工具 - 在线 JSON 美化、压缩与校验",
-      description: "免费在线 JSON 格式化工具，支持 JSON 美化、压缩和结构查看。无需登录，数据直接在浏览器本地处理，不上传服务器。",
+      description: "免费在线 JSON 格式化工具，支持 JSON 美化、压缩、校验和结构查看。无需登录，数据直接在浏览器本地处理，不上传服务器。",
     },
     seo: {
       heading: "JSON 在线格式化、美化与校验",

@@ -148,8 +148,7 @@ export function HomeExperience() {
                 留在<span>这一页</span>。
               </h1>
               <p>
-                知页为文本、数据与图片准备了一组轻量工具。
-                不必注册，不必上传，在浏览器里把手边的问题处理完。
+                在线处理 JSON、Base64、Markdown、时间戳与图片水印，数据留在浏览器本地。
               </p>
               <div className="zhiye-product-hero__actions">
                 <Link href="/tools" className="zhiye-product-primary">
