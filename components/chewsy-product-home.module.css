@@ -1016,6 +1016,30 @@
   height: 16px;
 }
 
+.site .headerAction,
+.site .primaryAction,
+.site .ctaAction {
+  color: var(--paper-white);
+}
+
+.site .footerGithub {
+  color: var(--ink);
+}
+
+.site .textAction {
+  color: var(--purple);
+}
+
+.site .headerAction:hover,
+.site .primaryAction:hover,
+.site .ctaAction:hover {
+  color: var(--ink);
+}
+
+.site .footerGithub:hover {
+  color: var(--orange);
+}
+
 @media (max-width: 980px) {
   .nav {
     gap: 16px;
